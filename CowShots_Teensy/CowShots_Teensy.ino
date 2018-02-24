@@ -1,6 +1,7 @@
 /*---------------Includes-----------------------------------*/
 // #include <Metro.h>
 // none for now
+#include "Motor.h"
 
 /*---------------Module Defines-----------------------------*/
 // #define LIGHT_THRESHOLD 172  // trial and error thresholds
@@ -23,10 +24,12 @@ typedef enum {
 
 /*---------------Module Variables---------------------------*/
 // motor pins
-int E1 = 20;
-int D1 = 21;
-int D1_state = LOW;
-int E1_state = LOW;
+//int E1 = 20;
+//int D1 = 21;
+//int E2 = 22;
+//int D2 = 23;
+//int D1_state = LOW;
+//int E1_state = LOW;
 
 // ir beacon pins
 int READ_IR1=19;
@@ -46,6 +49,8 @@ void setup() {
   pinMode(ledPin,OUTPUT);
   pinMode(E1,OUTPUT);
   pinMode(D1,OUTPUT);
+  pinMode(E2,OUTPUT);
+  pinMode(D2,OUTPUT);
   digitalWrite(ledPin,ledState);
   digitalWrite(E1,E1_state);
   digitalWrite(D1,D1_state);
@@ -89,22 +94,24 @@ void read_IR(){
 }
 void Resp_to_key_motor(char a){
   if (a=='0'){
-    E1_state=LOW;
-    D1_state=LOW;
+    //E1_state=LOW;
+    //D1_state=LOW;
+    Motor_Stop();
   }
   else if (a=='1'){//direction 1
-    E1_state=LOW;
-    D1_state=HIGH;
+    GoBackwards();
+    
   }
   else if (a=='2'){//direction 2
-    E1_state=HIGH;
-    D1_state=HIGH;
+    GoForward();
   }
   else{
     Serial.println("Key not recognized");
   }
   digitalWrite(E1,E1_state);
   digitalWrite(D1,D1_state);
+  digitalWrite(E2,E2_state);
+  digitalWrite(D2,D2_state);
   Serial.print("digitalWrite ");
   Serial.print(E1_state);
   Serial.print(" ");
