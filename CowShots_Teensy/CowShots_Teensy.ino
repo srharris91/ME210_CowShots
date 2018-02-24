@@ -1,7 +1,9 @@
 /*---------------Includes-----------------------------------*/
 // #include <Metro.h>
+#include <IntervalTimer.h>
 // none for now
 #include "Motor.h"
+#include "Line_Following.h"
 
 /*---------------Module Defines-----------------------------*/
 // #define LIGHT_THRESHOLD 172  // trial and error thresholds
@@ -47,16 +49,15 @@ void setup() {
   // put your setup code here, to run once:
   pinMode(READ_IR1, INPUT);
   pinMode(ledPin,OUTPUT);
-  pinMode(E1,OUTPUT);
-  pinMode(D1,OUTPUT);
-  pinMode(E2,OUTPUT);
-  pinMode(D2,OUTPUT);
+  Setup_Motor_Pins();
   digitalWrite(ledPin,ledState);
   digitalWrite(E1,E1_state);
   digitalWrite(D1,D1_state);
   Serial.begin(9600);
   myTimer_LED.begin(blink_LED,1000000);
   //myTimer_read.begin(read_IR,1000000);
+
+  Setup_Line_Sampling();
 }
 
 void loop() {
@@ -108,9 +109,9 @@ void Resp_to_key_motor(char a){
   else{
     Serial.println("Key not recognized");
   }
-  digitalWrite(E1,E1_state);
+  analogWrite(E1,E1_state);
   digitalWrite(D1,D1_state);
-  digitalWrite(E2,E2_state);
+  analogWrite(E2,E2_state);
   digitalWrite(D2,D2_state);
   Serial.print("digitalWrite ");
   Serial.print(E1_state);
