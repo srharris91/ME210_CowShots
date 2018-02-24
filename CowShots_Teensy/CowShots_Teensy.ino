@@ -12,6 +12,7 @@
 /*---------------Module Function Prototypes-----------------*/
 void blink_LED();
 void read_IR();
+void Resp_to_key_motor(char);
 
 /*---------------State Definitions--------------------------*/
 /* example from Raptor Starter
@@ -21,25 +22,46 @@ typedef enum {
 */
 
 /*---------------Module Variables---------------------------*/
-int inPin=20;
+// motor pins
+int E1 = 20;
+int D1 = 21;
+int D1_state = LOW;
+int E1_state = LOW;
+
+// ir beacon pins
+int READ_IR1=19;
 int inState=0;
+
+// onboard LED
 int ledState=LOW;
 int ledPin=13;
+
+// timers
 IntervalTimer myTimer_LED, myTimer_read;
 
 /*---------------CowShots Main Functions----------------*/
 void setup() {
   // put your setup code here, to run once:
-  pinMode(inPin, INPUT);
+  pinMode(READ_IR1, INPUT);
   pinMode(ledPin,OUTPUT);
+  pinMode(E1,OUTPUT);
+  pinMode(D1,OUTPUT);
   digitalWrite(ledPin,ledState);
+  digitalWrite(E1,E1_state);
+  digitalWrite(D1,D1_state);
   Serial.begin(9600);
   myTimer_LED.begin(blink_LED,1000000);
-  myTimer_read.begin(read_IR,1000000);
+  //myTimer_read.begin(read_IR,1000000);
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
+  if (Serial.available()){
+    char key_serial_monitor = Serial.read();
+    Serial.print("Read in key: ");
+    Serial.println(key_serial_monitor);
+    Resp_to_key_motor(key_serial_monitor);
+  }
   /*  // example from Raptor Starter
   switch (state) {
     case STATE_MOVE_FORWARD:
@@ -62,6 +84,30 @@ void blink_LED(){
   //Serial.println("blink_LED called");
 }
 void read_IR(){
-  inState = analogRead(inPin);
+  inState = analogRead(READ_IR1);
   Serial.println(inState);
 }
+void Resp_to_key_motor(char a){
+  if (a=='0'){
+    E1_state=LOW;
+    D1_state=LOW;
+  }
+  else if (a=='1'){//direction 1
+    E1_state=LOW;
+    D1_state=HIGH;
+  }
+  else if (a=='2'){//direction 2
+    E1_state=HIGH;
+    D1_state=HIGH;
+  }
+  else{
+    Serial.println("Key not recognized");
+  }
+  digitalWrite(E1,E1_state);
+  digitalWrite(D1,D1_state);
+  Serial.print("digitalWrite ");
+  Serial.print(E1_state);
+  Serial.print(" ");
+  Serial.println(D1_state);
+}
+
