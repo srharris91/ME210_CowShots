@@ -25,11 +25,11 @@ void Setup_Line_Sensors(void) {
 }
 
 void Setup_Line_Sampling_Print(void) {
-  //Line_Sampling_Timer.begin(PrintLineSensorValues, 500000);
+   Line_Sampling_Timer.begin(PrintLineSensorValues, 500000);
 }
 
 void Setup_Line_Sampling(void) {
-   //Line_Sampling_Timer.begin(UpdateLineSensorValues, 500000);
+   Line_Sampling_Timer.begin(UpdateLineSensorValues, 500000);
 }
 // --------------------------------------------------------------- //
 

@@ -9,7 +9,7 @@ int D2_state = LOW;
 int E2_state = LOW;
 // ----------------------------------------------------- //
 
-int DutyCycle = 80;
+int DutyCycle = 140;
 
 // ------------------- SETUP MOTOR --------------------- //
 void Setup_Motor_Pins(void) {

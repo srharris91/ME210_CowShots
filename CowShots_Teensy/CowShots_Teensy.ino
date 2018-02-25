@@ -57,7 +57,7 @@ void setup() {
   myTimer_LED.begin(blink_LED,1000000);
   //myTimer_read.begin(read_IR,1000000);
 
-  Setup_Line_Sampling();
+  Setup_Line_Sampling_Print();
 }
 
 void loop() {
