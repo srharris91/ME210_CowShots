@@ -1,70 +1,104 @@
 #include <IntervalTimer.h>
+#include "Motor.h"
+#include "Line_Sensing.h"
 
-//Sensor pins
-int IR_SENSOR_READ_1 = 14;
-int IR_SENSOR_READ_2 = 15;
-int IR_SENSOR_READ_3 = 16;
+//Sensor 1 is on the left, sensor 2 is on the right
 
-// Sensor values, between 0 and 1024
-unsigned int Sensor_1;
-unsigned int Sensor_2;
-unsigned int Sensor_3;
+// ------------------ VARIABLES ----------------------- //
+int error=0;
+int previous_error = 0; //For the D of PID
+long cumulated_error=0; //For the I of PID
 
-//Sensor Timer
+unsigned int Kp = 1; //Gains
+unsigned int Kd = 2;
+unsigned int Ki = 1;
+int correction = 0; //This will be our resulting PID correction
+
+//In case we hit a gray or black turning tape we want to stop following line with an interrupt, using this for example
+bool Breaking_Event = 0;
+// ---------------------------------------------------- //
+
+//Module Functions
+void Follow_Line(void);
+
+// ------------------- TIMER -------------------------- //
+// Timer we will use to read IR values and update motor speeds with PID
 IntervalTimer Line_Sampling_Timer;
+int sampling_rate = 10; //in ms
+// ---------------------------------------------------- //
 
-void UpdateLineSensorValues(void);
-void PrintLineSensorValues(void);
 
+// -------------------------- SETUP FUNCTIONS ---------------------------- //
+void Setup_Line_Following(void) {
+   Line_Sampling_Timer.begin(Follow_Line, 1000*sampling_rate);
+}
+// ----------------------------------------------------------------------- //
 
-// --------------------- SETUP FUNCTIONS ------------------------ //
-void Setup_Line_Sensors(void) {
-  pinMode(IR_SENSOR_READ_1, INPUT);
-  pinMode(IR_SENSOR_READ_2, INPUT);
-  pinMode(IR_SENSOR_READ_3, INPUT);
+//To use when we transition between states so that we don't mess up the variables
+void Reset_PID_vars(void) {
+  error = 0;
+  cumulated_error = 0;
 }
 
-void Setup_Line_Sampling_Print(void) {
-   Line_Sampling_Timer.begin(PrintLineSensorValues, 500000);
-}
+void Follow_Line(void) {
 
-void Setup_Line_Sampling(void) {
-   Line_Sampling_Timer.begin(UpdateLineSensorValues, 500000);
-}
-// --------------------------------------------------------------- //
+  //Read the IR LED measurements
+  UpdateLineSensorValues();
+  
+  //Set flag if we found a gray line so that we could use an interrupt to transition to a new state
+  if ( Get_Color(Sensor_3) != 2) {
+    Breaking_Event = 1;
+  }
+  
+  //Update error terms
+  previous_error = error;
+  error = Sensor_2 - Sensor_1; //will be positive if we are going too far right
+  cumulated_error += error;
 
+  //Correction
+  correction = Kp*(error + Ki*cumulated_error + Kd*(error - previous_error));
+  
+  //Anti windup
+  if(correction > 75) { //We could tune that
+    correction = 75;
+    cumulated_error -= error;
+  }
+  else if(correction < 0) {
+    correction = 0;
+    cumulated_error = -error;
+  }
 
-// ------------------ Read sensor values ------------------------- //
-void Read_IR_Sensor_1(void) {
-  Sensor_1 = analogRead(IR_SENSOR_READ_1);
-}
-void Read_IR_Sensor_2(void) {
-  Sensor_2 = analogRead(IR_SENSOR_READ_2);
-}
-void Read_IR_Sensor_3(void) {
-  Sensor_3 = analogRead(IR_SENSOR_READ_3);
-}
-// --------------------------------------------------------------- //
+  //Update right and left motor speeds
+  Right_Speed = DutyCycle + correction;
+  Left_Speed = DutyCycle - correction;
 
+  //Apply saturation 
+  if (Right_Speed < 0) {
+    Right_Speed = -Right_Speed;
+    Right_Direction = LOW;
+  }
+  else {
+    Right_Direction = HIGH;
+  }
+  
+  if (Right_Speed > Max_Speed) {
+    Right_Speed = Max_Speed;
+  }
+  
+    if (Left_Speed > Max_Speed) {
+    Left_Speed = Max_Speed;
+  }
 
-void PrintLineSensorValues(void) {
-  Read_IR_Sensor_1();
-  Read_IR_Sensor_2();
-  Read_IR_Sensor_3();
-  Serial.println( "------------ LINE SENSING ----------------");
-  Serial.println("Sensor 1 Value:");
-  Serial.println(Sensor_1);
-  Serial.println("Sensor 2 Value:");
-  Serial.println(Sensor_2);
-  Serial.println("Sensor 3 Value:");
-  Serial.println(Sensor_3);
-  Serial.println("-------------------------------------------");
-  Serial.println();
-}
+  if (Left_Speed < 0) {
+    Left_Speed = -Left_Speed;
+    Left_Direction = LOW;
+  }
+  else {
+    Left_Direction = HIGH;
+  }
 
-void UpdateLineSensorValues(void) {
-  Read_IR_Sensor_1();
-  Read_IR_Sensor_2();
-  Read_IR_Sensor_3();
+  //Run the motor
+  Advance();
+  
 }
 
