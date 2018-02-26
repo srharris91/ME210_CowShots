@@ -1,4 +1,8 @@
-#include <IntervalTimer.h>
+/*
+ *Functions to be used for reading the IR sensors to follow the line.
+ *This includes reading the analog input to the Teensy from the IR sensors
+*/
+
 
 //Sensor pins
 int IR_SENSOR_READ_1 = 14;

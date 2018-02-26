@@ -1,3 +1,7 @@
+/*
+ * Functions to be used to output motor control
+*/
+
 // ---------------------- PINS ------------------------- //
 int E1 = 20;
 int D1 = 21;
@@ -73,5 +77,3 @@ void Motor_Stop(void) {
     digitalWrite(D2,D2_state);
 }
 // -------------------------------------------------------- //
-
-

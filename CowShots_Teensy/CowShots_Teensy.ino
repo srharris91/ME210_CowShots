@@ -1,9 +1,10 @@
 /*---------------Includes-----------------------------------*/
 // #include <Metro.h>
 #include <IntervalTimer.h>
-// none for now
-#include "Motor.h"
-#include "Line_Following.h"
+// CowShots created header files
+#include "Motor.h"          // functions to control the motor
+#include "Line_Sensing.h"   // function to sense the line
+#include "Line_Following.h" // function to follow the line
 
 /*---------------Module Defines-----------------------------*/
 // #define LIGHT_THRESHOLD 172  // trial and error thresholds

@@ -1,6 +1,7 @@
-#include <IntervalTimer.h>
-#include "Motor.h"
-#include "Line_Sensing.h"
+/* 
+ * Functions to be used for following the Line, this needs functions from Line_Sensing.h
+ * But we don't need an extra include here. 
+*/
 
 //Sensor 1 is on the left, sensor 2 is on the right
 
@@ -101,4 +102,3 @@ void Follow_Line(void) {
   Advance();
   
 }
-
