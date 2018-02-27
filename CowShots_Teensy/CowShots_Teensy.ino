@@ -3,6 +3,7 @@
 #include <IntervalTimer.h>
 // CowShots created header files
 #include "Motor.h"          // functions to control the motor
+#include "Stepper.h"
 
 // global variables needed for both Line sensing and Line following
 int error=0;
@@ -64,18 +65,21 @@ void setup() {
   Setup_Line_Following();
   //myTimer_read.begin(read_IR,1000000);
 
-  Setup_Line_Sampling_Print();
+  //Setup_Line_Sampling_Print();
+  //Setup_Stepper();
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  if (Serial.available()){
-    char key_serial_monitor = Serial.read();
-    Serial.print("Read in key: ");
-    Serial.println(key_serial_monitor);
-    Resp_to_key_motor(key_serial_monitor);
-  }
+  //if (Serial.available()){
+    //char key_serial_monitor = Serial.read();
+    //Serial.print("Read in key: ");
+    //Serial.println(key_serial_monitor);
+    //Resp_to_key_motor(key_serial_monitor);
+  //}
   //Follow_Line();
+  //stepmotor.setSpeed(140);
+  //stepmotor.runSpeed();
   /*  // example from Raptor Starter
   switch (state) {
     case STATE_MOVE_FORWARD:
@@ -99,7 +103,7 @@ void blink_LED(){
 }
 void read_IR(){
   inState = analogRead(READ_IR1);
-  Serial.println(inState);
+  //Serial.println(inState);
 }
 void Resp_to_key_motor(char a){
   if (a=='0'){
@@ -113,6 +117,12 @@ void Resp_to_key_motor(char a){
   }
   else if (a=='2'){//direction 2
     GoForward();
+  }
+  else if (a=='s'){// stepper motor go
+    //runsteppermotor();
+    //stepmotor.setSpeed(1400);
+    //stepmotor.move(1000);
+    Serial.println("Stepper Motor moved one");
   }
   else{
     Serial.println("Key not recognized");

@@ -52,9 +52,9 @@ void Read_IR_Sensor_3(void) {
 
 
 void PrintLineSensorValues(void) {
-  //Read_IR_Sensor_1();
-  //Read_IR_Sensor_2();
-  //Read_IR_Sensor_3();
+  Read_IR_Sensor_1();
+  Read_IR_Sensor_2();
+  Read_IR_Sensor_3();
   Serial.println( "------------ LINE SENSING ----------------");
   Serial.print("Sensor 1 Value: ");
   Serial.println(Sensor_1);
@@ -83,14 +83,15 @@ void UpdateLineSensorValues(void) {
 
 // ------------------- Identify Color ----------------------- //
 int Get_Color(int Sensor_value) {
-  if(Sensor_value < 150) {
-    return 0; //Black
-  }
-  else if (Sensor_value < 350) {
-    return 1; //Gray
-  }
-  else {
-    return 2; //White
-  }
+  return map(Sensor_value, 0, 500, 0, 100);
+//  if(Sensor_value < 150) {
+//    return 0; //Black
+//  }
+//  else if (Sensor_value < 350) {
+//    return 100; //Gray
+//  }
+//  else {
+//    return 200; //White
+//  }
 }
 // ----------------------------------------------------------- //

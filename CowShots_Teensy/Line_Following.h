@@ -9,9 +9,9 @@
 double previous_error = 0; //For the D of PID
 double cumulated_error=0; //For the I of PID
 
-double Kp = 1.; //Gains
-double Kd = 2.0;
-double Ki = 1.0;
+double Kp = 5.; //Gains
+double Kd = 0.;
+double Ki = 0.0;
 
 //In case we hit a gray or black turning tape we want to stop following line with an interrupt, using this for example
 bool Breaking_Event = 0;
@@ -48,22 +48,26 @@ void Follow_Line(void) {
   if ( Get_Color(Sensor_3) != 2) {
     Breaking_Event = 1;
   }
+  Sensor_1 = Get_Color(Sensor_1);
+  Sensor_2 = Get_Color(Sensor_2);
+  Sensor_3 = Get_Color(Sensor_3);
   
   //Update error terms
   previous_error = error;
   error = Sensor_2 - Sensor_3; //will be positive if we are going too far right
+  
   cumulated_error += error;
 
   //Correction
   correction = Kp*(error + Ki*cumulated_error + Kd*(error - previous_error));
-  
+  Serial.println(correction);
   //Anti windup
-  if(correction > 50) { //We could tune that
-    correction = 50 ;
+  if(correction > 25) { //We could tune that
+    correction = 25 ;
     cumulated_error -= error;
   }
-  else if(correction < -150) {
-    correction = -150;
+  else if(correction < -25) {
+    correction = -25;
     cumulated_error = -error;
   }
 
