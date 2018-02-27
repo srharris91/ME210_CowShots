@@ -3,6 +3,10 @@
 #include <IntervalTimer.h>
 // CowShots created header files
 #include "Motor.h"          // functions to control the motor
+
+// global variables needed for both Line sensing and Line following
+int error=0;
+double correction = 0; //This will be our resulting PID correction
 #include "Line_Sensing.h"   // function to sense the line
 #include "Line_Following.h" // function to follow the line
 
@@ -56,6 +60,8 @@ void setup() {
   digitalWrite(D1,D1_state);
   Serial.begin(9600);
   myTimer_LED.begin(blink_LED,1000000);
+  Setup_Line_Sensors();
+  Setup_Line_Following();
   //myTimer_read.begin(read_IR,1000000);
 
   Setup_Line_Sampling_Print();
@@ -69,6 +75,7 @@ void loop() {
     Serial.println(key_serial_monitor);
     Resp_to_key_motor(key_serial_monitor);
   }
+  //Follow_Line();
   /*  // example from Raptor Starter
   switch (state) {
     case STATE_MOVE_FORWARD:

@@ -6,14 +6,12 @@
 //Sensor 1 is on the left, sensor 2 is on the right
 
 // ------------------ VARIABLES ----------------------- //
-int error=0;
-int previous_error = 0; //For the D of PID
-long cumulated_error=0; //For the I of PID
+double previous_error = 0; //For the D of PID
+double cumulated_error=0; //For the I of PID
 
-unsigned int Kp = 1; //Gains
-unsigned int Kd = 2;
-unsigned int Ki = 1;
-int correction = 0; //This will be our resulting PID correction
+double Kp = 1.; //Gains
+double Kd = 2.0;
+double Ki = 1.0;
 
 //In case we hit a gray or black turning tape we want to stop following line with an interrupt, using this for example
 bool Breaking_Event = 0;
@@ -53,49 +51,49 @@ void Follow_Line(void) {
   
   //Update error terms
   previous_error = error;
-  error = Sensor_2 - Sensor_1; //will be positive if we are going too far right
+  error = Sensor_2 - Sensor_3; //will be positive if we are going too far right
   cumulated_error += error;
 
   //Correction
   correction = Kp*(error + Ki*cumulated_error + Kd*(error - previous_error));
   
   //Anti windup
-  if(correction > 75) { //We could tune that
-    correction = 75;
+  if(correction > 50) { //We could tune that
+    correction = 50 ;
     cumulated_error -= error;
   }
-  else if(correction < 0) {
-    correction = 0;
+  else if(correction < -150) {
+    correction = -150;
     cumulated_error = -error;
   }
 
   //Update right and left motor speeds
   Right_Speed = DutyCycle + correction;
   Left_Speed = DutyCycle - correction;
-
+  
   //Apply saturation 
   if (Right_Speed < 0) {
     Right_Speed = -Right_Speed;
-    Right_Direction = LOW;
+    Right_Direction = HIGH;
   }
   else {
-    Right_Direction = HIGH;
+    Right_Direction = LOW;
   }
   
   if (Right_Speed > Max_Speed) {
     Right_Speed = Max_Speed;
   }
   
-    if (Left_Speed > Max_Speed) {
+  if (Left_Speed > Max_Speed) {
     Left_Speed = Max_Speed;
   }
 
   if (Left_Speed < 0) {
     Left_Speed = -Left_Speed;
-    Left_Direction = LOW;
+    Left_Direction = HIGH;
   }
   else {
-    Left_Direction = HIGH;
+    Left_Direction = LOW;
   }
 
   //Run the motor

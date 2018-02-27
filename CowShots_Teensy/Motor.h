@@ -13,8 +13,8 @@ int D2_state = LOW;
 int E2_state = LOW;
 // ----------------------------------------------------- //
 
-int DutyCycle = 140; //Our reference speed
-int Max_Speed = 200; //We use this to apply saturation
+int DutyCycle = 100; //Our reference speed
+int Max_Speed = 150; //We use this to apply saturation
 int Right_Speed = DutyCycle;
 int Left_Speed = DutyCycle;
 int Right_Direction = HIGH; //These could eventually replace D1_state if it works out
@@ -32,10 +32,10 @@ void Setup_Motor_Pins(void) {
 
 // ----------------- Custom Moving --------------------- //
 void Advance(void) {
-  E1_state = Right_Speed;
-  D1_state=HIGH;
-  E2_state = Left_Speed;
-  D2_state=HIGH;
+  E1_state = Left_Speed;
+  D1_state=Left_Direction;
+  E2_state = Right_Speed;
+  D2_state=Right_Direction;
   analogWrite(E1,E1_state);
   digitalWrite(D1,D1_state);
   analogWrite(E2,E2_state);

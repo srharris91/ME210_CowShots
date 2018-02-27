@@ -33,7 +33,7 @@ void Setup_Line_Sensors(void) {
 }
 
 void Setup_Line_Sampling_Print(void) {
-   Line_Sampling_Timer_Print.begin(PrintLineSensorValues, 1000*sampling_rate_print);
+   Line_Sampling_Timer_Print.begin(PrintLineSensorValues, 10000*sampling_rate_print);
 }
 // --------------------------------------------------------------- //
 
@@ -52,18 +52,27 @@ void Read_IR_Sensor_3(void) {
 
 
 void PrintLineSensorValues(void) {
-  Read_IR_Sensor_1();
-  Read_IR_Sensor_2();
-  Read_IR_Sensor_3();
+  //Read_IR_Sensor_1();
+  //Read_IR_Sensor_2();
+  //Read_IR_Sensor_3();
   Serial.println( "------------ LINE SENSING ----------------");
-  Serial.println("Sensor 1 Value:");
+  Serial.print("Sensor 1 Value: ");
   Serial.println(Sensor_1);
-  Serial.println("Sensor 2 Value:");
+  Serial.print("Sensor 2 Value: ");
   Serial.println(Sensor_2);
-  Serial.println("Sensor 3 Value:");
+  Serial.print("Sensor 3 Value: ");
   Serial.println(Sensor_3);
   Serial.println("-------------------------------------------");
   Serial.println();
+  Serial.print("Motor speeds ");
+  Serial.print(Right_Speed);
+  Serial.print(" - ");
+  Serial.print(Left_Speed);
+  Serial.print(" = ");
+  Serial.println(error);
+  Serial.print("Correction = ");
+  Serial.println(correction);
+
 }
 
 void UpdateLineSensorValues(void) {
