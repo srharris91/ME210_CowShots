@@ -63,7 +63,8 @@ void setup() {
   myTimer_LED.begin(blink_LED,1000000);
   Setup_Line_Sensors();
   Setup_Line_Following();
-  //myTimer_read.begin(read_IR,1000000);
+
+
 
   //Setup_Line_Sampling_Print();
   //Setup_Stepper();
@@ -71,12 +72,12 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  //if (Serial.available()){
-    //char key_serial_monitor = Serial.read();
-    //Serial.print("Read in key: ");
-    //Serial.println(key_serial_monitor);
-    //Resp_to_key_motor(key_serial_monitor);
-  //}
+  if (Serial.available()){
+    char key_serial_monitor = Serial.read();
+    Serial.print("Read in key: ");
+    Serial.println(key_serial_monitor);
+    Resp_to_key_motor(key_serial_monitor);
+  }
   //Follow_Line();
   //stepmotor.setSpeed(140);
   //stepmotor.runSpeed();
@@ -119,9 +120,9 @@ void Resp_to_key_motor(char a){
     GoForward();
   }
   else if (a=='s'){// stepper motor go
-    //runsteppermotor();
+    runsteppermotor();
     //stepmotor.setSpeed(1400);
-    //stepmotor.move(1000);
+    //stepmotor.move(50);
     Serial.println("Stepper Motor moved one");
   }
   else{
