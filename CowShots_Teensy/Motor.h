@@ -32,8 +32,8 @@ void Setup_Motor_Pins(void) {
 
 // ----------------- Custom Moving --------------------- //
 void Advance(void) {
-  Serial.println(Left_Speed);
-  Serial.println(Right_Speed);
+  //Serial.println(Left_Speed);
+  //Serial.println(Right_Speed);
   E1_state = Left_Speed;
   D1_state=Left_Direction;
   E2_state = Right_Speed;

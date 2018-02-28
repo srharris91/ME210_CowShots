@@ -49,15 +49,23 @@ void Follow_Line(void) {
   if (Sensor_2 == 2 && Sensor_3 == 2) {
     Right_Speed = DutyCycle;
     Left_Speed = DutyCycle;
+    Serial.println(0);
   } else if (Sensor_2 == 0){
     Right_Speed = 0;
     Left_Speed = DutyCycle;
+    Serial.println(1);
   } else if (Sensor_3 == 0){
     Right_Speed = DutyCycle;
     Left_Speed = 0;
+    Serial.println(2);
+  }
+  else{
+      Serial.println("Something is wrong in applying saturation");
   }
   //Run the motor
   
   Advance();
   
 }
+
+
