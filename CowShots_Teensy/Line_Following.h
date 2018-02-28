@@ -30,77 +30,34 @@ int sampling_rate = 10; //in ms
 // -------------------------- SETUP FUNCTIONS ---------------------------- //
 void Setup_Line_Following(void) {
    Line_Sampling_Timer.begin(Follow_Line, 1000*sampling_rate);
+   
 }
 // ----------------------------------------------------------------------- //
 
-//To use when we transition between states so that we don't mess up the variables
-void Reset_PID_vars(void) {
-  error = 0;
-  cumulated_error = 0;
-}
 
 void Follow_Line(void) {
 
   //Read the IR LED measurements
   UpdateLineSensorValues();
   
-  //Set flag if we found a gray line so that we could use an interrupt to transition to a new state
-  if ( Get_Color(Sensor_3) != 2) {
-    Breaking_Event = 1;
-  }
   Sensor_1 = Get_Color(Sensor_1);
   Sensor_2 = Get_Color(Sensor_2);
   Sensor_3 = Get_Color(Sensor_3);
-  
-  //Update error terms
-  previous_error = error;
-  error = Sensor_2 - Sensor_3; //will be positive if we are going too far right
-  
-  cumulated_error += error;
 
-  //Correction
-  correction = Kp*(error + Ki*cumulated_error + Kd*(error - previous_error));
-  Serial.println(correction);
-  //Anti windup
-  if(correction > 25) { //We could tune that
-    correction = 25 ;
-    cumulated_error -= error;
-  }
-  else if(correction < -25) {
-    correction = -25;
-    cumulated_error = -error;
-  }
-
-  //Update right and left motor speeds
-  Right_Speed = DutyCycle + correction;
-  Left_Speed = DutyCycle - correction;
   
   //Apply saturation 
-  if (Right_Speed < 0) {
-    Right_Speed = -Right_Speed;
-    Right_Direction = HIGH;
+  if (Sensor_2 == 2 && Sensor_3 == 2) {
+    Right_Speed = DutyCycle;
+    Left_Speed = DutyCycle;
+  } else if (Sensor_2 == 0){
+    Right_Speed = 0;
+    Left_Speed = DutyCycle;
+  } else if (Sensor_3 == 0){
+    Right_Speed = DutyCycle;
+    Left_Speed = 0;
   }
-  else {
-    Right_Direction = LOW;
-  }
-  
-  if (Right_Speed > Max_Speed) {
-    Right_Speed = Max_Speed;
-  }
-  
-  if (Left_Speed > Max_Speed) {
-    Left_Speed = Max_Speed;
-  }
-
-  if (Left_Speed < 0) {
-    Left_Speed = -Left_Speed;
-    Left_Direction = HIGH;
-  }
-  else {
-    Left_Direction = LOW;
-  }
-
   //Run the motor
+  
   Advance();
   
 }

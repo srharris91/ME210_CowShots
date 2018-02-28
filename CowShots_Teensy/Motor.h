@@ -5,20 +5,20 @@
 // ---------------------- PINS ------------------------- //
 int E1 = 20;
 int D1 = 21;
-int D1_state = LOW;
+int D1_state = HIGH;
 int E1_state = LOW;
 int E2 = 22;
 int D2 = 23;
-int D2_state = LOW;
+int D2_state = HIGH;
 int E2_state = LOW;
 // ----------------------------------------------------- //
 
-int DutyCycle = 50; //Our reference speed
+int DutyCycle = 100; //Our reference speed
 int Max_Speed = 150; //We use this to apply saturation
 int Right_Speed = DutyCycle;
 int Left_Speed = DutyCycle;
-int Right_Direction = HIGH; //These could eventually replace D1_state if it works out
-int Left_Direction = HIGH;
+int Right_Direction = LOW; //These could eventually replace D1_state if it works out
+int Left_Direction = LOW;
 
 // ------------------- SETUP MOTOR --------------------- //
 void Setup_Motor_Pins(void) {
@@ -32,6 +32,8 @@ void Setup_Motor_Pins(void) {
 
 // ----------------- Custom Moving --------------------- //
 void Advance(void) {
+  Serial.println(Left_Speed);
+  Serial.println(Right_Speed);
   E1_state = Left_Speed;
   D1_state=Left_Direction;
   E2_state = Right_Speed;
