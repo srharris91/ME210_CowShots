@@ -68,10 +68,6 @@ void PrintLineSensorValues(void) {
   Serial.print(Right_Speed);
   Serial.print(" - ");
   Serial.print(Left_Speed);
-  Serial.print(" = ");
-  Serial.println(error);
-  Serial.print("Correction = ");
-  Serial.println(correction);
 
 }
 

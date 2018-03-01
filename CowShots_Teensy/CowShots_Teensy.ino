@@ -1,61 +1,46 @@
 /*---------------Includes-----------------------------------*/
-// #include <Metro.h>
 #include <IntervalTimer.h>
+#include <AccelStepper.h>
+#include "GlobalVariables.h"
 // CowShots created header files
+#include "LED_Blink.h"
+
 #include "Motor.h"          // functions to control the motor
 #include "Stepper.h"
 
 // global variables needed for both Line sensing and Line following
-int error=0;
-double correction = 0; //This will be our resulting PID correction
 #include "Line_Sensing.h"   // function to sense the line
 #include "Line_Following.h" // function to follow the line
+#include "State_Machine.h"
 
 /*---------------Module Defines-----------------------------*/
 // #define LIGHT_THRESHOLD 172  // trial and error thresholds
 // #define LINE_THRESHOLD 10    // trial and error thresholds
-// none for now
 
 
 
 /*---------------Module Function Prototypes-----------------*/
 void blink_LED();
-void read_IR();
 void Resp_to_key_motor(char);
 
 /*---------------State Definitions--------------------------*/
-/* example from Raptor Starter
-typedef enum {
-  STATE_MOVE_FORWARD, STATE_MOVE_BACKWARD
-} States_t;
-*/
 
 /*---------------Module Variables---------------------------*/
 
-// ir beacon pins
-int READ_IR1=19;
-int inState=0;
 
-// onboard LED
-int ledState=LOW;
-int ledPin=13;
-
-// timers
-IntervalTimer myTimer_LED, myTimer_read;
 
 /*---------------CowShots Main Functions----------------*/
 void setup() {
   // put your setup code here, to run once:
-  pinMode(READ_IR1, INPUT);
   pinMode(ledPin,OUTPUT);
-  Setup_Motor_Pins();
   digitalWrite(ledPin,ledState);
-  digitalWrite(E1,E1_state);
-  digitalWrite(D1,D1_state);
   Serial.begin(9600);
-  myTimer_LED.begin(blink_LED,1000000);
+
+  Setup_LED_Blink();
+  Setup_Motor_Pins();
   Setup_Line_Sensors();
   Setup_Line_Following();
+  state=STATE_MOVE_TO_A;
 
   //Setup_Line_Sampling_Print();
   //Setup_Stepper();
@@ -72,31 +57,43 @@ void loop() {
   //Follow_Line();
   //stepmotor.setSpeed(140);
   //stepmotor.runSpeed();
-  /*  // example from Raptor Starter
   switch (state) {
-    case STATE_MOVE_FORWARD:
-      handleMoveForward();
+    case STATE_MOVE_TO_A:
+      handleMoveToA();
       break;
-    case STATE_MOVE_BACKWARD:
-      handleMoveBackward();
+    case STATE_STOP_AT_A:
+      handleStopAtA();
+      break;
+    case STATE_MOVE_TO_PATENT_OFFICE:
+      handleMoveToPatentOffice();
+      break;
+    case STATE_STOP_AT_PATENT_OFFICE:
+      handleStopAtPatentOffice();
+      break;
+    case STATE_MOVE_TO_B:
+      handleMoveToB();
+      break;
+    case STATE_STOP_AT_B:
+      handleStopAtB();
+      break;
+    case STATE_MOVE_TO_TURN:
+      handleMoveToTurn();
+      break;
+    case STATE_TAKE_A_TURN:
+      handleTakeATurn();
+      break;
+    case STATE_MOVE_TO_GATE:
+      handleMoveToGate();
+      break;
+    case STATE_STOP_AT_GATE:
+      handleStopAtGate();
       break;
     default:    // Should never get into an unhandled state
       Serial.println("What is this I do not even...");
   }
-  */
 }
 
 /*----------------Module Functions--------------------------*/
-void blink_LED(){
-  if (ledState==LOW) ledState=HIGH;
-  else ledState=LOW;
-  digitalWrite(ledPin,ledState);
-  //Serial.println("blink_LED called");
-}
-void read_IR(){
-  inState = analogRead(READ_IR1);
-  //Serial.println(inState);
-}
 void Resp_to_key_motor(char a){
   if (a=='0'){
     //E1_state=LOW;
