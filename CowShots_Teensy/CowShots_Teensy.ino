@@ -1,6 +1,7 @@
 /*---------------Includes-----------------------------------*/
 #include <IntervalTimer.h>
 #include <AccelStepper.h>
+#include <Metro.h>
 #include "GlobalVariables.h"
 // CowShots created header files
 #include "LED_Blink.h"
