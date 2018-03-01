@@ -46,6 +46,18 @@ void Advance(void) {
 // ------------------------------------------------------ //
 
 // ----------------- Elementary Moving ------------------ //
+
+void TurnRight(void) {
+    E1_state=80;
+    D1_state=HIGH;
+    E2_state=80;
+    D2_state=LOW;
+    analogWrite(E1,E1_state);
+    digitalWrite(D1,D1_state);
+    analogWrite(E2,E2_state);
+    digitalWrite(D2,D2_state);
+}
+
 void GoBackwards(void) {
     E1_state=DutyCycle;
     D1_state=LOW;
