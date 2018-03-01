@@ -89,6 +89,7 @@ void handleTakeATurn(){
   if (Sensor_3_Color == 0) {
     Setup_Line_Following();
     state = STATE_MOVE_TO_GATE;
+    Motor_Stop();
   }
   interrupts();
 }
