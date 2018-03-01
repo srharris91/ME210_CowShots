@@ -109,10 +109,10 @@ void Resp_to_key_motor(char a){
     GoForward();
   }
   else if (a=='s'){// stepper motor go
-    runsteppermotor();
+    //runsteppermotor();
     //stepmotor.setSpeed(1400);
     //stepmotor.move(50);
-    Serial.println("Stepper Motor moved one");
+    //Serial.println("Stepper Motor moved one");
   }
   else if (a=='l'){// what is my line sensor 1 reading?
     Serial.print("Your line sensor 1 is reading ");

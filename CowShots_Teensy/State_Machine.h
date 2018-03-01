@@ -1,5 +1,6 @@
 // variables and flags
 bool resp_To_Gray_Happened=false;
+bool resp_Move_Stepper_Motor=false;
 
 // State machine
 typedef enum {
@@ -53,6 +54,11 @@ void handleMoveToA(){
     }
 }
 void handleStopAtA(){
+    if (resp_Move_Stepper_Motor==false){
+        Move_Stepper_Motor();
+        resp_Move_Stepper_Motor=true;
+    }
+    Run_Stepper_Motor();
 }
 void handleMoveToPatentOffice(){
 }
