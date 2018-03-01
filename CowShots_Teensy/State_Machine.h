@@ -10,6 +10,7 @@ typedef enum {
     STATE_MOVE_TO_B,
     STATE_STOP_AT_B,
     STATE_MOVE_TO_TURN,
+    STATE_WAIT_FOR_TURN,
     STATE_TAKE_A_TURN,
     STATE_MOVE_TO_GATE,
     STATE_STOP_AT_GATE,
@@ -26,10 +27,12 @@ void handleStopAtPatentOffice();
 void handleMoveToB();
 void handleStopAtB();
 void handleMoveToTurn();
+void handleWaitForTurn();
 void handleTakeATurn();
 void handleMoveToGate();
 void handleStopAtGate();
 
+void Start_Right_Turn();
 // Resp function declarations
 void Resp_to_Gray();
 
@@ -61,8 +64,28 @@ void handleMoveToB(){
 void handleStopAtB(){
 }
 void handleMoveToTurn(){
+  noInterrupts();
+  if (Color_1 == 0) {
+    Line_Sampling_Timer.end();
+    metroTimer.interval(100);
+    metroTimer.reset();
+    state = STATE_WAIT_FOR_TURN;
+  }
+  interrupts();
+}
+void handleWaitForTurn() {
+  if (metroTimer.check() == 1) {
+    TurnRight();
+    state = STATE_TAKE_A_TURN;
+  }
 }
 void handleTakeATurn(){
+  noInterrupts();
+  if (Color_3 == 0) {
+    Setup_Line_Following();
+    state = STATE_MOVE_TO_GATE;
+  }
+  interrupts();
 }
 void handleMoveToGate(){
 }
