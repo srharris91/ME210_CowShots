@@ -31,13 +31,6 @@ typedef enum {
 */
 
 /*---------------Module Variables---------------------------*/
-// motor pins
-//int E1 = 20;
-//int D1 = 21;
-//int E2 = 22;
-//int D2 = 23;
-//int D1_state = LOW;
-//int E1_state = LOW;
 
 // ir beacon pins
 int READ_IR1=19;
@@ -63,8 +56,6 @@ void setup() {
   myTimer_LED.begin(blink_LED,1000000);
   Setup_Line_Sensors();
   Setup_Line_Following();
-
-
 
   //Setup_Line_Sampling_Print();
   //Setup_Stepper();

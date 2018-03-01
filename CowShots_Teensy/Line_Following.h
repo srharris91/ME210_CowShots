@@ -47,8 +47,8 @@ void Follow_Line(void) {
   
   //Apply saturation 
   if (Sensor_2 == 2 && Sensor_3 == 2) {
-    Right_Speed = DutyCycle/2;
-    Left_Speed = DutyCycle/2;
+    Right_Speed = DutyCycle;
+    Left_Speed = DutyCycle;
     Serial.println(0);
   } else if (Sensor_2 == 0){
     Right_Speed = 0;
