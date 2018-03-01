@@ -29,7 +29,6 @@ void handleTakeATurn();
 void handleMoveToGate();
 void handleStopAtGate();
 
-void Start_Right_Turn();
 // Resp function declarations
 void Resp_to_Gray();
 
@@ -55,7 +54,7 @@ void handleStopAtB(){
 }
 void handleMoveToTurn(){
   noInterrupts();
-  if (Color_1 == 0) {
+  if (Sensor_1_Color == 0) {
     Line_Sampling_Timer.end();
     metroTimer.interval(100);
     metroTimer.reset();
@@ -71,7 +70,7 @@ void handleWaitForTurn() {
 }
 void handleTakeATurn(){
   noInterrupts();
-  if (Color_3 == 0) {
+  if (Sensor_3_Color == 0) {
     Setup_Line_Following();
     state = STATE_MOVE_TO_GATE;
   }
