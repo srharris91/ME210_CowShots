@@ -27,7 +27,7 @@ void Reset_PID_vars(void);
 // ------------------- TIMER -------------------------- //
 // Timer we will use to read IR values and update motor speeds with PID
 IntervalTimer Line_Sampling_Timer;
-IntervalTimer Reset_PID_vars_Timer
+IntervalTimer Reset_PID_vars_Timer;
 int sampling_rate = 10; //in ms
 // ---------------------------------------------------- //
 
@@ -69,14 +69,14 @@ void Follow_Line_PID(void) {
   //Error calculation
   previous_error = error;
   error = Sensor_2_Color - Sensor_3_Color; //error is big if we are too far right, so we measure black on left (3) and white on right (2)
-  cumulated error += error;
+  cumulated_error += error;
 
   //Saturation on cumulated error
   if (cumulated_error > 25) {
     cumulated_error = 25;
   }
   else if (cumulated_error < -25) {
-    cumulated_error = -25
+    cumulated_error = -25;
   }
 
   //Correction calculation
@@ -87,7 +87,7 @@ void Follow_Line_PID(void) {
     correction = 100;
   }
   else if (correction < -100) {
-    correction = -100
+    correction = -100;
   }
 
   //Instead of keeping constant speed we will rather set the speeds slower:
@@ -107,13 +107,13 @@ void Follow_Line_PID(void) {
   }
   else {
     Left_Speed = DutyCycle;
-    Right_Speed = DutyCycle - correction
+    Right_Speed = DutyCycle - correction;
     Right_Direction = HIGH;
     Left_Direction = HIGH;
 
     if (Right_Speed < 0) {
       Right_Speed = -Right_Speed;
-      Right_Direction ) LOW;
+      Right_Direction = LOW;
     }
   }
   
@@ -134,7 +134,7 @@ void Follow_Line(void) {
   
   //Apply saturation 
   error = Sensor_2_Color - Sensor_3_Color;
-  correction = Kp*error + Ki*
+  correction = Kp*error + Ki*cumulated_error;
   if (Sensor_2_Color == 2 && Sensor_3_Color == 2) {
     Right_Speed = DutyCycle;
     Left_Speed = DutyCycle;
