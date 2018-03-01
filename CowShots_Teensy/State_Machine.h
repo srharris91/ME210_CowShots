@@ -1,3 +1,6 @@
+// variables and flags
+bool resp_To_Gray_Happened=false;
+
 // State machine
 typedef enum {
     STATE_MOVE_TO_A,
@@ -40,6 +43,13 @@ void handleMoveToA(){
     interrupts();
     if (Sensor_1_Color_Copy == 1){// if gray detected on far right sensor
         Resp_to_Gray();
+        resp_To_Gray_Happened=true;
+    }
+    if (resp_To_Gray_Happened && metroTimer.check()){
+        Line_Sampling_Timer.end(); // stop line following
+        Motor_Stop(); // stop motor
+        state = STATE_STOP_AT_A;
+        resp_To_Gray_Happened=false;
     }
 }
 void handleStopAtA(){
@@ -85,12 +95,7 @@ void handleStopAtGate(){
 // Resp Function Definitions
 void Resp_to_Gray(){// end LineFollow
     metroTimer.interval(timer_gray);
-    metroTimer.reset();
-    if (metroTimer.check()){
-        Line_Sampling_Timer.end(); // stop line following
-        Motor_Stop(); // stop motor
-        state = STATE_STOP_AT_A;
-    }
+    metroTimer.reset();    
 }
 
 

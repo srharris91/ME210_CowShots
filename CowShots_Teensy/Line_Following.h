@@ -49,15 +49,15 @@ void Follow_Line(void) {
   if (Sensor_2_Color == 2 && Sensor_3_Color == 2) {
     Right_Speed = DutyCycle;
     Left_Speed = DutyCycle;
-    Serial.println(0);
+    //Serial.println(0);
   } else if (Sensor_2_Color == 0){
     Right_Speed = 0;
     Left_Speed = DutyCycle;
-    Serial.println(1);
+    //Serial.println(1);
   } else if (Sensor_3_Color == 0){
     Right_Speed = DutyCycle;
     Left_Speed = 0;
-    Serial.println(2);
+    //Serial.println(2);
   }
   else{
       Serial.println("Something is wrong in applying saturation");
