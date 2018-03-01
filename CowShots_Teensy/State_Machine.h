@@ -61,12 +61,48 @@ void handleStopAtA(){
     Run_Stepper_Motor();
 }
 void handleMoveToPatentOffice(){
+    noInterrupts();
+    int Sensor_1_Color_Copy = Sensor_1_Color;
+    interrupts();
+    if (Sensor_1_Color_Copy == 1){// if gray detected on far right sensor
+        Resp_to_Gray();
+        resp_To_Gray_Happened=true;
+    }
+    if (resp_To_Gray_Happened && metroTimer.check()){
+        Line_Sampling_Timer.end(); // stop line following
+        Motor_Stop(); // stop motor
+        state = STATE_STOP_AT_A;
+        resp_To_Gray_Happened=false;
+    }
 }
 void handleStopAtPatentOffice(){
+    if (resp_Move_Stepper_Motor==false){
+        Move_Stepper_Motor();
+        resp_Move_Stepper_Motor=true;
+    }
+    Run_Stepper_Motor();
 }
 void handleMoveToB(){
+    noInterrupts();
+    int Sensor_1_Color_Copy = Sensor_1_Color;
+    interrupts();
+    if (Sensor_1_Color_Copy == 1){// if gray detected on far right sensor
+        Resp_to_Gray();
+        resp_To_Gray_Happened=true;
+    }
+    if (resp_To_Gray_Happened && metroTimer.check()){
+        Line_Sampling_Timer.end(); // stop line following
+        Motor_Stop(); // stop motor
+        state = STATE_STOP_AT_A;
+        resp_To_Gray_Happened=false;
+    }
 }
 void handleStopAtB(){
+    if (resp_Move_Stepper_Motor==false){
+        Move_Stepper_Motor();
+        resp_Move_Stepper_Motor=true;
+    }
+    Run_Stepper_Motor();
 }
 void handleMoveToTurn(){
   noInterrupts();
