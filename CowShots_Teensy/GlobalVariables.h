@@ -3,7 +3,8 @@
  *
 */
 // Global Includes
-int timer_gray = 100; // in milliseconds
+int timer_gray = 500; // in milliseconds
+int timer_stepper = 2000; // in milliseconds
 //IntervalTimer little_Timer;
 Metro metroTimer = Metro(timer_gray);
 

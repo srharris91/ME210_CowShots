@@ -44,7 +44,7 @@ void setup() {
   state=STATE_MOVE_TO_A;
 
   //Setup_Line_Sampling_Print();
-  //Setup_Stepper();
+  Setup_Stepper();
 }
 
 void loop() {
@@ -80,6 +80,9 @@ void loop() {
     case STATE_MOVE_TO_TURN:
       handleMoveToTurn();
       break;
+    case STATE_WAIT_FOR_TURN:
+      handleWaitForTurn();
+      break;
     case STATE_TAKE_A_TURN:
       handleTakeATurn();
       break;
@@ -90,8 +93,10 @@ void loop() {
       handleStopAtGate();
       break;
     default:    // Should never get into an unhandled state
-      Serial.println("What is this I do not even...");
+      Serial.print("What is this I do not even...");
+      Serial.println(state);
   }
+  stepmotor.run();
 }
 
 /*----------------Module Functions--------------------------*/
@@ -109,14 +114,31 @@ void Resp_to_key_motor(char a){
     GoForward();
   }
   else if (a=='s'){// stepper motor go
-    runsteppermotor();
+    //runsteppermotor();
     //stepmotor.setSpeed(1400);
-    //stepmotor.move(50);
+    stepmotor.move(10);
     Serial.println("Stepper Motor moved one");
   }
+  else if (a=='c'){// check if stepper motor is done
+    Serial.print("DistanceToGo = ");
+    Serial.println(stepmotor.distanceToGo());
+  }
   else if (a=='l'){// what is my line sensor 1 reading?
-    Serial.print("Your line sensor 1 is reading ");
-    Serial.println(Sensor_1_Color);
+    UpdateLineSensorValues();
+    Sensor_1_Color = Get_Color(Sensor_1);
+    Sensor_2_Color = Get_Color(Sensor_2);
+    Sensor_3_Color = Get_Color(Sensor_3);
+
+    Serial.println("Your line sensor 1 is reading ");
+    Serial.print(Sensor_1_Color);
+    Serial.print(" ");
+    Serial.println(Sensor_1);
+    Serial.print(Sensor_2_Color);
+    Serial.print(" ");
+    Serial.println(Sensor_2);
+    Serial.print(Sensor_3_Color);
+    Serial.print(" ");
+    Serial.println(Sensor_3);
   }
   else if (a=='t'){// what state am I in?
     Serial.print("You are in state = ");
