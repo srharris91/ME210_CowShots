@@ -114,6 +114,14 @@ void Resp_to_key_motor(char a){
     //stepmotor.move(50);
     Serial.println("Stepper Motor moved one");
   }
+  else if (a=='l'){// what is my line sensor 1 reading?
+    Serial.print("Your line sensor 1 is reading ");
+    Serial.println(Sensor_1_Color);
+  }
+  else if (a=='t'){// what state am I in?
+    Serial.print("You are in state = ");
+    Serial.println(state);
+  }
   else{
     Serial.println("Key not recognized");
   }
@@ -121,9 +129,9 @@ void Resp_to_key_motor(char a){
   digitalWrite(D1,D1_state);
   analogWrite(E2,E2_state);
   digitalWrite(D2,D2_state);
-  Serial.print("digitalWrite ");
-  Serial.print(E1_state);
-  Serial.print(" ");
-  Serial.println(D1_state);
+  //Serial.print("digitalWrite ");
+  //Serial.print(E1_state);
+  //Serial.print(" ");
+  //Serial.println(D1_state);
 }
 
