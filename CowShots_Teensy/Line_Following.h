@@ -40,21 +40,21 @@ void Follow_Line(void) {
   //Read the IR LED measurements
   UpdateLineSensorValues();
   
-  Sensor_1 = Get_Color(Sensor_1);
-  Sensor_2 = Get_Color(Sensor_2);
-  Sensor_3 = Get_Color(Sensor_3);
+  Sensor_1_Color = Get_Color(Sensor_1);
+  Sensor_2_Color = Get_Color(Sensor_2);
+  Sensor_3_Color = Get_Color(Sensor_3);
 
   
   //Apply saturation 
-  if (Sensor_2 == 2 && Sensor_3 == 2) {
+  if (Sensor_2_Color == 2 && Sensor_3_Color == 2) {
     Right_Speed = DutyCycle;
     Left_Speed = DutyCycle;
     Serial.println(0);
-  } else if (Sensor_2 == 0){
+  } else if (Sensor_2_Color == 0){
     Right_Speed = 0;
     Left_Speed = DutyCycle;
     Serial.println(1);
-  } else if (Sensor_3 == 0){
+  } else if (Sensor_3_Color == 0){
     Right_Speed = DutyCycle;
     Left_Speed = 0;
     Serial.println(2);

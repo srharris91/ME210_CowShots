@@ -30,10 +30,18 @@ void handleMoveToGate();
 void handleStopAtGate();
 
 void Start_Right_Turn();
+// Resp function declarations
+void Resp_to_Gray();
 
 
 // Function Definitions
 void handleMoveToA(){
+    noInterrupts();
+    int Sensor_1_Color_Copy = Sensor_1_Color;
+    interrupts();
+    if (Sensor_1_Color_Copy == 1){// if gray detected on far right sensor
+        Resp_to_Gray();
+    }
 }
 void handleStopAtA(){
 }
@@ -75,7 +83,16 @@ void handleStopAtGate(){
 }
 
 
-
+// Resp Function Definitions
+void Resp_to_Gray(){// end LineFollow
+    metroTimer.interval(timer_gray);
+    metroTimer.reset();
+    if (metroTimer.check()){
+        Line_Sampling_Timer.end(); // stop line following
+        Motor_Stop(); // stop motor
+        state = STATE_STOP_AT_A;
+    }
+}
 
 
 
