@@ -50,6 +50,7 @@ void handleMoveToA(){
         Line_Sampling_Timer.end(); // stop line following
         Motor_Stop(); // stop motor
         state = STATE_STOP_AT_A;
+        Serial.println("state set to STATE_STOP_AT_A");
         resp_To_Gray_Happened=false;
     }
 }
@@ -59,6 +60,12 @@ void handleStopAtA(){
         resp_Move_Stepper_Motor=true;
     }
     Run_Stepper_Motor();
+    if (stepmotor.distanceToGo() == 0){
+        Setup_Line_Following();
+        state = STATE_MOVE_TO_PATENT_OFFICE;
+        Serial.println("state set to STATE_MOVE_TO_PATENT_OFFICE");
+        resp_Move_Stepper_Motor=false;
+    }
 }
 void handleMoveToPatentOffice(){
     noInterrupts();
@@ -71,7 +78,8 @@ void handleMoveToPatentOffice(){
     if (resp_To_Gray_Happened && metroTimer.check()){
         Line_Sampling_Timer.end(); // stop line following
         Motor_Stop(); // stop motor
-        state = STATE_STOP_AT_A;
+        state = STATE_STOP_AT_PATENT_OFFICE;
+        Serial.println("state set to STATE_STOP_AT_PATENT_OFFICE");
         resp_To_Gray_Happened=false;
     }
 }
@@ -81,6 +89,13 @@ void handleStopAtPatentOffice(){
         resp_Move_Stepper_Motor=true;
     }
     Run_Stepper_Motor();
+    if (stepmotor.distanceToGo() == 0){
+        Setup_Line_Following();
+        state = STATE_MOVE_TO_B;
+        Serial.println("state set to STATE_MOVE_TO_B");
+        resp_Move_Stepper_Motor=false;
+
+    }
 }
 void handleMoveToB(){
     noInterrupts();
@@ -93,7 +108,8 @@ void handleMoveToB(){
     if (resp_To_Gray_Happened && metroTimer.check()){
         Line_Sampling_Timer.end(); // stop line following
         Motor_Stop(); // stop motor
-        state = STATE_STOP_AT_A;
+        state = STATE_STOP_AT_B;
+        Serial.println("state set to STOP_AT_B");
         resp_To_Gray_Happened=false;
     }
 }
@@ -103,6 +119,12 @@ void handleStopAtB(){
         resp_Move_Stepper_Motor=true;
     }
     Run_Stepper_Motor();
+    if (stepmotor.distanceToGo() == 0){
+        Setup_Line_Following();
+        state = STATE_MOVE_TO_TURN;
+        Serial.println("state set to MOVE_TO_TURN");
+        resp_Move_Stepper_Motor=false;
+    }
 }
 void handleMoveToTurn(){
   noInterrupts();
@@ -111,6 +133,7 @@ void handleMoveToTurn(){
     metroTimer.interval(100);
     metroTimer.reset();
     state = STATE_WAIT_FOR_TURN;
+    Serial.println("state set to WAIT_FOR_TURN");
   }
   interrupts();
 }
@@ -118,6 +141,7 @@ void handleWaitForTurn() {
   if (metroTimer.check() == 1) {
     TurnRight();
     state = STATE_TAKE_A_TURN;
+    Serial.println("state set to TAKE_A_TURN");
   }
 }
 void handleTakeATurn(){
@@ -125,7 +149,8 @@ void handleTakeATurn(){
   if (Sensor_3_Color == 0) {
     Setup_Line_Following();
     state = STATE_MOVE_TO_GATE;
-    Motor_Stop();
+    Serial.println("state set to MOVE_TO_GATE");
+    //Motor_Stop();
   }
   interrupts();
 }

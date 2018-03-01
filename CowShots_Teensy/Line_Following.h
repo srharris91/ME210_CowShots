@@ -60,7 +60,7 @@ void Follow_Line(void) {
     //Serial.println(2);
   }
   else{
-      Serial.println("Something is wrong in applying saturation");
+      //Serial.println("Something is wrong in applying saturation");
   }
   //Run the motor
   
