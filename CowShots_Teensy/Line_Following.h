@@ -133,8 +133,6 @@ void Follow_Line(void) {
 
   
   //Apply saturation 
-  error = Sensor_2_Color - Sensor_3_Color;
-  correction = Kp*error + Ki*cumulated_error;
   if (Sensor_2_Color == 2 && Sensor_3_Color == 2) {
     Right_Speed = DutyCycle;
     Left_Speed = DutyCycle;
