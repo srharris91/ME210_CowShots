@@ -155,6 +155,20 @@ void handleTakeATurn(){
   interrupts();
 }
 void handleMoveToGate(){
+    noInterrupts();
+    int Sensor_1_Color_Copy = Sensor_1_Color;
+    interrupts();
+    if (Sensor_1_Color_Copy == 0){// if black detected on far right sensor
+        Resp_to_Gray();
+        resp_To_Gray_Happened=true;
+    }
+    if (resp_To_Gray_Happened && metroTimer.check()){
+        Line_Sampling_Timer.end(); // stop line following
+        Motor_Stop(); // stop motor
+        state = STATE_STOP_AT_GATE;
+        Serial.println("state set to STOP_AT_GATE");
+        resp_To_Gray_Happened=false;
+    }
 }
 void handleStopAtGate(){
 }
