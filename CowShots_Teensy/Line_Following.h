@@ -15,6 +15,12 @@ double Kp = 5.; //Gains
 double Kd = 0.;
 double Ki = 0.0;
 
+typedef enum {
+    LEFT, RIGHT
+} turn;
+turn turn_Remember;
+
+
 //In case we hit a gray or black turning tape we want to stop following line with an interrupt, using this for example
 bool Breaking_Event = 0;
 // ---------------------------------------------------- //
@@ -28,7 +34,7 @@ void Reset_PID_vars(void);
 // Timer we will use to read IR values and update motor speeds with PID
 IntervalTimer Line_Sampling_Timer;
 IntervalTimer Reset_PID_vars_Timer;
-int sampling_rate = 10; //in ms
+int sampling_rate = 1; //in ms
 // ---------------------------------------------------- //
 
 
@@ -37,7 +43,7 @@ void Setup_Line_Following(void) {
    Line_Sampling_Timer.begin(Follow_Line, 1000*sampling_rate);
 }
 void Setup_Line_Following_PID(void) {
-   Line_Sampling_Timer.begin(Follow_Line_PID, 1000*sampling_rate);
+   Line_Sampling_Timer.begin(Follow_Line_PID, 100*sampling_rate);
    Reset_PID_vars_Timer.begin(Reset_PID_vars, 1500000);
    previous_error = 0; //For the D of PID
    cumulated_error = 0; //For the I of PID
@@ -95,21 +101,21 @@ void Follow_Line_PID(void) {
   if (correction > 0) { //We want to turn left
     Right_Speed = DutyCycle;
     Left_Speed = DutyCycle - correction;
-    Right_Direction = HIGH;
-    Left_Direction = HIGH;
+    Right_Direction = LOW;
+    Left_Direction = LOW;
     
     //Set the directions in case left
     if (Left_Speed < 0) {
       Left_Speed = -Left_Speed;
-      Left_Direction = LOW;
+      Left_Direction = HIGH;
     }
     
   }
   else {
     Left_Speed = DutyCycle;
     Right_Speed = DutyCycle - correction;
-    Right_Direction = HIGH;
-    Left_Direction = HIGH;
+    Right_Direction = LOW;
+    Left_Direction = LOW;
 
     if (Right_Speed < 0) {
       Right_Speed = -Right_Speed;
@@ -134,16 +140,26 @@ void Follow_Line(void) {
   
   //Apply saturation 
   if (Sensor_2_Color == 2 && Sensor_3_Color == 2) {
-    Right_Speed = DutyCycle;
-    Left_Speed = DutyCycle;
+    if (turn_Remember == RIGHT){
+        Right_Speed = DutyCycle/2;
+        Left_Speed = DutyCycle;
+    }
+    else if (turn_Remember == LEFT){
+        Right_Speed = DutyCycle;
+        Left_Speed = DutyCycle/2;
+    }
+    //Right_Speed = DutyCycle;
+    //Left_Speed = DutyCycle;
     //Serial.println(0);
   } else if (Sensor_2_Color == 0){
-    Right_Speed = 0;
+    Right_Speed = DutyCycle/2;
     Left_Speed = DutyCycle;
+    turn_Remember=RIGHT;
     //Serial.println(1);
   } else if (Sensor_3_Color == 0){
     Right_Speed = DutyCycle;
-    Left_Speed = 0;
+    Left_Speed = DutyCycle/2;
+    turn_Remember=LEFT;
     //Serial.println(2);
   }
   else{
