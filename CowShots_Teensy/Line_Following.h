@@ -43,7 +43,7 @@ void Setup_Line_Following(void) {
    Line_Sampling_Timer.begin(Follow_Line, 1000*sampling_rate);
 }
 void Setup_Line_Following_PID(void) {
-   Line_Sampling_Timer.begin(Follow_Line_PID, 100*sampling_rate);
+   Line_Sampling_Timer.begin(Follow_Line_PID, 1000*sampling_rate);
    Reset_PID_vars_Timer.begin(Reset_PID_vars, 1500000);
    previous_error = 0; //For the D of PID
    cumulated_error = 0; //For the I of PID
@@ -68,7 +68,7 @@ void Follow_Line_PID(void) {
   //Read the IR LED measurements
   UpdateLineSensorValues();
   
-  Sensor_1_Color = Get_Color(Sensor_1);
+  Sensor_1_Color = Get_Color1(Sensor_1);
   Sensor_2_Color = Get_Color(Sensor_2);
   Sensor_3_Color = Get_Color(Sensor_3);
 
@@ -89,11 +89,11 @@ void Follow_Line_PID(void) {
   correction = Kp*error + Ki*cumulated_error + Kd*(error-previous_error);
 
   //Saturation on correction
-  if (correction > 100) {
-    correction = 100;
+  if (correction > 50) {
+    correction = 50;
   }
-  else if (correction < -100) {
-    correction = -100;
+  else if (correction < -50) {
+    correction = -50;
   }
 
   //Instead of keeping constant speed we will rather set the speeds slower:
@@ -106,22 +106,23 @@ void Follow_Line_PID(void) {
     
     //Set the directions in case left
     if (Left_Speed < 0) {
-      Left_Speed = -Left_Speed;
+      Left_Speed = DutyCycle-correction;
       Left_Direction = HIGH;
     }
     
   }
   else {
     Left_Speed = DutyCycle;
-    Right_Speed = DutyCycle - correction;
+    Right_Speed = DutyCycle + correction;
     Right_Direction = LOW;
     Left_Direction = LOW;
 
     if (Right_Speed < 0) {
       Right_Speed = -Right_Speed;
-      Right_Direction = LOW;
+      Right_Direction = HIGH;
     }
   }
+  //Serial.println(Right_Speed);
   
   Advance();
   
@@ -129,11 +130,11 @@ void Follow_Line_PID(void) {
 
 
 void Follow_Line(void) {
-
+  int change_dutyCycle=10;
   //Read the IR LED measurements
   UpdateLineSensorValues();
   
-  Sensor_1_Color = Get_Color(Sensor_1);
+  Sensor_1_Color = Get_Color1(Sensor_1);
   Sensor_2_Color = Get_Color(Sensor_2);
   Sensor_3_Color = Get_Color(Sensor_3);
 
@@ -141,24 +142,24 @@ void Follow_Line(void) {
   //Apply saturation 
   if (Sensor_2_Color == 2 && Sensor_3_Color == 2) {
     if (turn_Remember == RIGHT){
-        Right_Speed = DutyCycle/2;
+        Right_Speed = DutyCycle-change_dutyCycle;
         Left_Speed = DutyCycle;
     }
     else if (turn_Remember == LEFT){
         Right_Speed = DutyCycle;
-        Left_Speed = DutyCycle/2;
+        Left_Speed = DutyCycle - change_dutyCycle;
     }
     //Right_Speed = DutyCycle;
     //Left_Speed = DutyCycle;
     //Serial.println(0);
   } else if (Sensor_2_Color == 0){
-    Right_Speed = DutyCycle/2;
+    Right_Speed = DutyCycle - change_dutyCycle;
     Left_Speed = DutyCycle;
     turn_Remember=RIGHT;
     //Serial.println(1);
   } else if (Sensor_3_Color == 0){
     Right_Speed = DutyCycle;
-    Left_Speed = DutyCycle/2;
+    Left_Speed = DutyCycle - change_dutyCycle;
     turn_Remember=LEFT;
     //Serial.println(2);
   }

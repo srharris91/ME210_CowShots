@@ -15,6 +15,7 @@ typedef enum {
     STATE_TAKE_A_TURN,
     STATE_MOVE_TO_GATE,
     STATE_STOP_AT_GATE,
+    STATE_TEST,
 } States_t;
 
 // State variable

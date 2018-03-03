@@ -5,15 +5,15 @@
 // ---------------------- PINS ------------------------- //
 int E1 = 20;
 int D1 = 21;
-int D1_state = HIGH;
+int D1_state = LOW;
 int E1_state = LOW;
 int E2 = 22;
 int D2 = 23;
-int D2_state = HIGH;
+int D2_state = LOW;
 int E2_state = LOW;
 // ----------------------------------------------------- //
 
-int DutyCycle = 150; //Our reference speed
+int DutyCycle = 40; //Our reference speed
 int Max_Speed = 200; //We use this to apply saturation
 int Right_Speed = DutyCycle;
 int Left_Speed = DutyCycle;
@@ -84,7 +84,7 @@ void GoBackwards(void) {
 void GoForward(void) {
     E1_state=DutyCycle;
     D1_state=HIGH;
-    E2_state=DutyCycle;
+    E2_state=DutyCycle-4;
     D2_state=HIGH;
     analogWrite(E1,E1_state);
     digitalWrite(D1,D1_state);
@@ -93,9 +93,9 @@ void GoForward(void) {
 }
 
 void Motor_Stop(void) {
-    E1_state=0;
+    E1_state=LOW;
     D1_state=LOW;
-    E2_state=0;
+    E2_state=LOW;
     D2_state=LOW;
     analogWrite(E1,E1_state);
     digitalWrite(D1,D1_state);

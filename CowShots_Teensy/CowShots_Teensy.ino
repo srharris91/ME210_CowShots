@@ -92,6 +92,8 @@ void loop() {
     case STATE_STOP_AT_GATE:
       handleStopAtGate();
       break;
+    case STATE_TEST:
+      break;
     default:    // Should never get into an unhandled state
       Serial.print("What is this I do not even...");
       Serial.println(state);
@@ -104,14 +106,18 @@ void Resp_to_key_motor(char a){
   if (a=='0'){
     //E1_state=LOW;
     //D1_state=LOW;
+    state=STATE_TEST;
     Motor_Stop();
   }
   else if (a=='1'){//direction 1
+    state=STATE_TEST;
     GoBackwards();
     
   }
   else if (a=='2'){//direction 2
     GoForward();
+    state=STATE_TEST;
+
   }
   else if (a=='s'){// stepper motor go
     //runsteppermotor();
@@ -125,7 +131,7 @@ void Resp_to_key_motor(char a){
   }
   else if (a=='l'){// what is my line sensor 1 reading?
     UpdateLineSensorValues();
-    Sensor_1_Color = Get_Color(Sensor_1);
+    Sensor_1_Color = Get_Color1(Sensor_1);
     Sensor_2_Color = Get_Color(Sensor_2);
     Sensor_3_Color = Get_Color(Sensor_3);
 

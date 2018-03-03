@@ -91,4 +91,16 @@ int Get_Color(int Sensor_value) {
     return 2; //White
   }
 }
+int Get_Color1(int Sensor_value) {
+  //return map(Sensor_value, 0, 500, 0, 100);
+  if(Sensor_value < 100) {
+    return 0; //Black
+  }
+  else if (Sensor_value < 250) {
+    return 1; //Gray
+  }
+  else {
+    return 2; //White
+  }
+}
 // ----------------------------------------------------------- //
