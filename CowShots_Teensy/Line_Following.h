@@ -11,9 +11,9 @@ double cumulated_error=0; //For the I of PID
 double error = 0;
 double correction = 0;
 
-double Kp = 50.; //Gains
-double Kd = 0.;
-double Ki = 0.;
+double Kp = 20.; //Gains
+double Kd = 3.;
+double Ki = 0.03;
 
 typedef enum {
     LEFT, RIGHT
@@ -100,8 +100,8 @@ void Follow_Line_PID(void) {
   //Instead of keeping constant speed we will rather set the speeds slower:
 
   if (correction > 0) { //We want to turn left
-    Right_Speed = DutyCycle;
-    Left_Speed = DutyCycle - correction;
+    Right_Speed = DutyCycle + correction/2.;
+    Left_Speed = DutyCycle - correction/2.;
     Right_Direction = LOW;
     Left_Direction = LOW;
     
@@ -113,8 +113,8 @@ void Follow_Line_PID(void) {
     
   }
   else {
-    Left_Speed = DutyCycle;
-    Right_Speed = DutyCycle + correction;
+    Left_Speed = DutyCycle - correction/2.;
+    Right_Speed = DutyCycle + correction/2.;
     Right_Direction = LOW;
     Left_Direction = LOW;
 
