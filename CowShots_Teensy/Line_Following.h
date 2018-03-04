@@ -11,9 +11,9 @@ double cumulated_error=0; //For the I of PID
 double error = 0;
 double correction = 0;
 
-double Kp = 5.; //Gains
+double Kp = 50.; //Gains
 double Kd = 0.;
-double Ki = 0.0;
+double Ki = 0.;
 
 typedef enum {
     LEFT, RIGHT
@@ -43,7 +43,7 @@ void Setup_Line_Following(void) {
    Line_Sampling_Timer.begin(Follow_Line, 1000*sampling_rate);
 }
 void Setup_Line_Following_PID(void) {
-   Line_Sampling_Timer.begin(Follow_Line_PID, 1000*sampling_rate);
+   Line_Sampling_Timer.begin(Follow_Line_PID, 50000*sampling_rate);
    Reset_PID_vars_Timer.begin(Reset_PID_vars, 1500000);
    previous_error = 0; //For the D of PID
    cumulated_error = 0; //For the I of PID
@@ -74,15 +74,16 @@ void Follow_Line_PID(void) {
 
   //Error calculation
   previous_error = error;
-  error = Sensor_2_Color - Sensor_3_Color; //error is big if we are too far right, so we measure black on left (3) and white on right (2)
+  //error = Sensor_2_Color - Sensor_3_Color; //error is big if we are too far right, so we measure black on left (3) and white on right (2)
+  error=(float(Sensor_2)-float(Sensor_3))/500.;
   cumulated_error += error;
 
   //Saturation on cumulated error
-  if (cumulated_error > 25) {
-    cumulated_error = 25;
+  if (cumulated_error > 100) {
+    cumulated_error = 100;
   }
-  else if (cumulated_error < -25) {
-    cumulated_error = -25;
+  else if (cumulated_error < -100) {
+    cumulated_error = -100;
   }
 
   //Correction calculation
@@ -123,7 +124,7 @@ void Follow_Line_PID(void) {
     }
   }
   //Serial.println(Right_Speed);
-  
+  //Serial.println(correction);
   Advance();
   
 }

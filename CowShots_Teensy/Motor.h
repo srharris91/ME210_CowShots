@@ -7,8 +7,8 @@ int E1 = 20;
 int D1 = 21;
 int D1_state = LOW;
 int E1_state = LOW;
-int E2 = 22;
-int D2 = 23;
+int E2 = 23;
+int D2 = 22;
 int D2_state = LOW;
 int E2_state = LOW;
 // ----------------------------------------------------- //

@@ -40,8 +40,13 @@ void setup() {
   Setup_LED_Blink();
   Setup_Motor_Pins();
   Setup_Line_Sensors();
-  Setup_Line_Following();
-  state=STATE_MOVE_TO_A;
+
+  //Initialize actions for the first state
+  //Setup_Line_Following();
+  Setup_Line_Following_PID();
+  //GoForward();
+  //state=STATE_TEST;
+  state = STATE_MOVE_TO_A;
 
   //Setup_Line_Sampling_Print();
   Setup_Stepper();
@@ -106,7 +111,9 @@ void Resp_to_key_motor(char a){
   if (a=='0'){
     //E1_state=LOW;
     //D1_state=LOW;
+    
     state=STATE_TEST;
+    Line_Sampling_Timer.end();
     Motor_Stop();
   }
   else if (a=='1'){//direction 1
@@ -149,6 +156,14 @@ void Resp_to_key_motor(char a){
   else if (a=='t'){// what state am I in?
     Serial.print("You are in state = ");
     Serial.println(state);
+  }
+  else if (a=='r'){
+    noInterrupts();
+    Serial.print("Correction = ");
+    Serial.println(correction);
+    Serial.print("error = ");
+    Serial.println(error);
+    interrupts();
   }
   else{
     Serial.println("Key not recognized");
