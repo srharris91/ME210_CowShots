@@ -14,6 +14,8 @@ unsigned int Sensor_1;
 unsigned int Sensor_2;
 unsigned int Sensor_3;
 
+
+
 //Sensor Timer
 IntervalTimer Line_Sampling_Timer_Print;
 int sampling_rate_print = 500; //This is in ms so that we store it in smaller variable
@@ -22,6 +24,7 @@ int sampling_rate_print = 500; //This is in ms so that we store it in smaller va
 // Some module function declarations here --------- //
 void UpdateLineSensorValues(void);
 void PrintLineSensorValues(void);
+int Get_Color(int Sensor_Value);
 // ------------------------------------------------ //
 
 
@@ -35,18 +38,29 @@ void Setup_Line_Sensors(void) {
 void Setup_Line_Sampling_Print(void) {
    Line_Sampling_Timer_Print.begin(PrintLineSensorValues, 10000*sampling_rate_print);
 }
+void Setup_Line_Sampling(void) {
+   Line_Sampling_Timer_Print.begin(UpdateLineSensorValues, 10*sampling_rate_print);
+}
+
+void Stop_Line_Sampling(void) {
+   Line_Sampling_Timer_Print.end();
+}
 // --------------------------------------------------------------- //
 
 
 // ------------------ Read sensor values ------------------------- //
 void Read_IR_Sensor_1(void) {
   Sensor_1 = analogRead(IR_SENSOR_READ_1);
+  Sensor_1_Color = Get_Color(Sensor_1);
+  
 }
 void Read_IR_Sensor_2(void) {
   Sensor_2 = analogRead(IR_SENSOR_READ_2);
+  Sensor_2_Color = Get_Color(Sensor_2);
 }
 void Read_IR_Sensor_3(void) {
   Sensor_3 = analogRead(IR_SENSOR_READ_3);
+  Sensor_3_Color = Get_Color(Sensor_3);
 }
 // --------------------------------------------------------------- //
 

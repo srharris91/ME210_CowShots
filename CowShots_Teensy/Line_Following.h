@@ -11,9 +11,9 @@ double cumulated_error=0; //For the I of PID
 double error = 0;
 double correction = 0;
 
-double Kp = 20.; //Gains
-double Kd = 3.;
-double Ki = 0.03;
+double Kp = 12.; //Gains
+double Kd = 7.;
+double Ki = 0.001;
 
 typedef enum {
     LEFT, RIGHT
@@ -76,25 +76,28 @@ void Follow_Line_PID(void) {
   previous_error = error;
   //error = Sensor_2_Color - Sensor_3_Color; //error is big if we are too far right, so we measure black on left (3) and white on right (2)
   error=(float(Sensor_2)-float(Sensor_3))/500.;
+  if (error > 0) {
+    error *=3;
+  }
   cumulated_error += error;
 
   //Saturation on cumulated error
-  if (cumulated_error > 100) {
-    cumulated_error = 100;
+  if (cumulated_error*Ki > 30) {
+    cumulated_error = 30./Ki;
   }
-  else if (cumulated_error < -100) {
-    cumulated_error = -100;
+  else if (cumulated_error*Ki < -30) {
+    cumulated_error = -30./Ki;
   }
 
   //Correction calculation
   correction = Kp*error + Ki*cumulated_error + Kd*(error-previous_error);
 
   //Saturation on correction
-  if (correction > 50) {
-    correction = 50;
+  if (correction > 70) {
+    correction = 70;
   }
-  else if (correction < -50) {
-    correction = -50;
+  else if (correction < -70) {
+    correction = -70;
   }
 
   //Instead of keeping constant speed we will rather set the speeds slower:
