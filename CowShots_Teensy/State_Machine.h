@@ -138,7 +138,7 @@ void handleMoveToTurn(){
   if (Sensor_1_Color == 0) {
     //Line_Sampling_Timer.end();
     Stop_Line_Following_PID();
-    Setup_Line_Sampling;
+    //Setup_Line_Sampling;
     TurnRight();
     metroTimer.interval(timer_WaitForTurn);
     metroTimer.reset();
@@ -148,20 +148,20 @@ void handleMoveToTurn(){
 }
 void handleWaitForTurn() {
   if (metroTimer.check() == 1) {
-    Stop_Line_Sampling();
     TurnRight();
     state = STATE_TAKE_A_TURN;
     Serial.println("state set to TAKE_A_TURN");
   }
 }
 void handleTakeATurn(){
+  
   UpdateLineSensorValues();
   noInterrupts();
   Sensor_3_Color = Get_Color(Sensor_3);
   interrupts();
 
   if (Sensor_3_Color == 0) {
-    
+    //Stop_Line_Sampling();
     Setup_Line_Following_PID();
     state = STATE_MOVE_TO_GATE;
     Serial.println("state set to MOVE_TO_GATE");

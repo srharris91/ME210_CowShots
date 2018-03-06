@@ -49,7 +49,7 @@ void Advance(void) {
 // ----------------- Elementary Moving ------------------ //
 
 void TurnRight(void) {
-    E1_state=28;
+    E1_state=38;
     D1_state=LOW;
     E2_state=28;
     D2_state=HIGH;

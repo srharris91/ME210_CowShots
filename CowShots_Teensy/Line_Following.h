@@ -12,10 +12,9 @@ double error = 0;
 double correction = 0;
 double correction_saturation=20.;
 
-double Kp = 0.07; //Gains
-double Kd = 0.7;
-//double Kd = 0.;
-double Ki = 0.;
+double Kp = 0.7; //Gains
+double Kd = 12.;
+double Ki = 0.00;
 
 typedef enum {
     LEFT, RIGHT
@@ -46,8 +45,8 @@ void Setup_Line_Following(void) {
 }
 void Setup_Line_Following_PID(void) {
    Line_Sampling_Timer.begin(Follow_Line_PID, 50000*sampling_rate);
-   Reset_PID_vars_Timer.begin(Reset_PID_vars, 1500000);
-   previous_error = 0; //For the D of PID
+   //Reset_PID_vars_Timer.begin(Reset_PID_vars, 300000);
+   previous_error = save_previous_error; //For the D of PID
    cumulated_error = 0; //For the I of PID
 }
 // ----------------------------------------------------------------------- //
@@ -79,16 +78,16 @@ void Follow_Line_PID(void) {
   //error = Sensor_2_Color - Sensor_3_Color; //error is big if we are too far right, so we measure black on left (3) and white on right (2)
   error=(float(Sensor_2)-float(Sensor_3));
   if (error > 0) {
-    error *=3;
+    error *=1.5;
   }
   cumulated_error += error;
 
   //Saturation on cumulated error
-  if (cumulated_error*Ki > 30) {
-    cumulated_error = 30./Ki;
+  if (cumulated_error*Ki > 10) {
+    cumulated_error = 10./Ki;
   }
-  else if (cumulated_error*Ki < -30) {
-    cumulated_error = -30./Ki;
+  else if (cumulated_error*Ki < -10) {
+    cumulated_error = -10./Ki;
   }
 
   //Correction calculation
@@ -173,6 +172,8 @@ void Follow_Line(void) {
       //Serial.println("Something is wrong in applying saturation");
   }
   //Run the motor
+
+  save_previous_error = previous_error;
   
   Advance();
   
