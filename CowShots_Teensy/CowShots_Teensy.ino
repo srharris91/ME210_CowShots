@@ -46,8 +46,8 @@ void setup() {
   Setup_Line_Following_PID();
   //GoForward();
   //state=STATE_TEST;
-  //state = STATE_MOVE_TO_A;
-  state = STATE_STOP_AT_B;
+  state = STATE_MOVE_TO_A;
+  //state = STATE_STOP_AT_B;
   //state = STATE_MOVE_TO_TURN;
 
   //Setup_Line_Sampling_Print();

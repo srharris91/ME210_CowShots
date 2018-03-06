@@ -13,7 +13,7 @@ int D2_state = LOW;
 int E2_state = LOW;
 // ----------------------------------------------------- //
 
-int DutyCycle = 35; //Our reference speed
+int DutyCycle = 40; //Our reference speed
 int Max_Speed = 200; //We use this to apply saturation
 int Right_Speed = DutyCycle;
 int Left_Speed = DutyCycle;
@@ -49,9 +49,9 @@ void Advance(void) {
 // ----------------- Elementary Moving ------------------ //
 
 void TurnRight(void) {
-    E1_state=28;
+    E1_state=38;
     D1_state=LOW;
-    E2_state=28;
+    E2_state=38;
     D2_state=HIGH;
     analogWrite(E1,E1_state);
     digitalWrite(D1,D1_state);

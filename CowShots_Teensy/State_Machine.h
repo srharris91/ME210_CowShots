@@ -1,7 +1,7 @@
 // variables and flags
 bool resp_To_Gray_Happened=false;
 bool resp_Move_Stepper_Motor=false;
-
+bool TakeATurnHappened=false;
 // State machine
 typedef enum {
     STATE_MOVE_TO_A,
@@ -139,7 +139,7 @@ void handleMoveToTurn(){
     //Line_Sampling_Timer.end();
     Stop_Line_Following_PID();
     //Setup_Line_Sampling;
-    TurnRight();
+    //TurnRight();
     metroTimer.interval(timer_WaitForTurn);
     metroTimer.reset();
     state = STATE_WAIT_FOR_TURN;
@@ -148,6 +148,7 @@ void handleMoveToTurn(){
 }
 void handleWaitForTurn() {
   if (metroTimer.check() == 1) {
+    
     TurnRight();
     save_previous_error = 0;
     state = STATE_TAKE_A_TURN;
@@ -158,26 +159,34 @@ void handleTakeATurn(){
   
   UpdateLineSensorValues();
   noInterrupts();
-  Sensor_3_Color = Get_Color(Sensor_3);
+  Sensor_2_Color = Get_Color(Sensor_2);
   interrupts();
 
-  if (Sensor_3_Color == 0) {
+  if (Sensor_2_Color == 0) {
     //Stop_Line_Sampling();
+    //DutyCycle=43;
     Setup_Line_Following_PID();
     state = STATE_MOVE_TO_GATE;
     Serial.println("state set to MOVE_TO_GATE");
     //Motor_Stop();
+    metroTimer.interval(timer_gray);
+    metroTimer.reset();
   }
+  
 }
 void handleMoveToGate(){
     noInterrupts();
     int Sensor_1_Color_Copy = Sensor_1_Color;
     interrupts();
-    if (Sensor_1_Color_Copy == 0){// if black detected on far right sensor
+    if (metroTimer.check()){
+       TakeATurnHappened=true;
+
+    }
+    if (TakeATurnHappened && Sensor_1_Color_Copy == 0){// if black detected on far right sensor
         Resp_to_Gray();
         resp_To_Gray_Happened=true;
     }
-    if (resp_To_Gray_Happened && metroTimer.check()){
+    if (TakeATurnHappened && resp_To_Gray_Happened && metroTimer.check()){
         //Line_Sampling_Timer.end(); // stop line following
         Stop_Line_Following_PID();
         Motor_Stop(); // stop motor
