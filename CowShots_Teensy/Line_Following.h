@@ -44,7 +44,7 @@ void Setup_Line_Following(void) {
    Line_Sampling_Timer.begin(Follow_Line, 10*sampling_rate); //10 micro
 }
 void Setup_Line_Following_PID(void) {
-   Line_Sampling_Timer.begin(Follow_Line_PID, 50000*sampling_rate);
+   Line_Sampling_Timer.begin(Follow_Line_PID, 5000*sampling_rate);
    //Reset_PID_vars_Timer.begin(Reset_PID_vars, 300000);
    previous_error = save_previous_error; //For the D of PID
    cumulated_error = 0; //For the I of PID

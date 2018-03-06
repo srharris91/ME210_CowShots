@@ -165,6 +165,7 @@ void handleTakeATurn(){
   if (Sensor_2_Color == 0) {
     //Stop_Line_Sampling();
     //DutyCycle=43;
+    DutyCycle=20;
     Setup_Line_Following_PID();
     state = STATE_MOVE_TO_GATE;
     Serial.println("state set to MOVE_TO_GATE");
