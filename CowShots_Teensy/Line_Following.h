@@ -10,10 +10,11 @@ double previous_error = 0; //For the D of PID
 double cumulated_error=0; //For the I of PID
 double error = 0;
 double correction = 0;
-double correction_saturation=15.;
+double correction_saturation=20.;
 
 double Kp = 0.07; //Gains
-double Kd = 1.0;
+double Kd = 0.7;
+//double Kd = 0.;
 double Ki = 0.;
 
 typedef enum {

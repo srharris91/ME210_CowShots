@@ -148,8 +148,8 @@ void handleMoveToTurn(){
 }
 void handleWaitForTurn() {
   if (metroTimer.check() == 1) {
-    TurnRight();
     Stop_Line_Sampling();
+    TurnRight();
     state = STATE_TAKE_A_TURN;
     Serial.println("state set to TAKE_A_TURN");
   }
