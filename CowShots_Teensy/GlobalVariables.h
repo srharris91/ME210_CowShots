@@ -6,7 +6,7 @@
 int timer_gray = 300; // in milliseconds
 //int timer_stepper = 2000; // in milliseconds
 //int timer_pulse = 10; //in milliseconds
-int timer_WaitForTurn=700;
+int timer_WaitForTurn=1500;
 double save_previous_error=0;
 //IntervalTimer little_Timer;
 Metro metroTimer = Metro(timer_gray);

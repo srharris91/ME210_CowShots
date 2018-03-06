@@ -149,6 +149,7 @@ void handleMoveToTurn(){
 void handleWaitForTurn() {
   if (metroTimer.check() == 1) {
     TurnRight();
+    save_previous_error = 0;
     state = STATE_TAKE_A_TURN;
     Serial.println("state set to TAKE_A_TURN");
   }
