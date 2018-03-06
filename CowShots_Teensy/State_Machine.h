@@ -165,27 +165,35 @@ void handleTakeATurn(){
   if (Sensor_2_Color == 0) {
     //Stop_Line_Sampling();
     //DutyCycle=43;
-    DutyCycle=20;
+    DutyCycle=25;
     Setup_Line_Following_PID();
     state = STATE_MOVE_TO_GATE;
     Serial.println("state set to MOVE_TO_GATE");
     //Motor_Stop();
     metroTimer.interval(timer_gray);
     metroTimer.reset();
+    metroPostTurn.interval(timer_PostTurn);
+    metroPostTurn.reset();
   }
   
 }
 void handleMoveToGate(){
+    //UpdateLineSensorValues();
     noInterrupts();
     int Sensor_1_Color_Copy = Sensor_1_Color;
     interrupts();
-    if (metroTimer.check()){
-       TakeATurnHappened=true;
-
+    if (DutyCycle<40 && metroPostTurn.check()){
+      DutyCycle++;
     }
-    if (TakeATurnHappened && Sensor_1_Color_Copy == 0){// if black detected on far right sensor
-        Resp_to_Gray();
+    if (TakeATurnHappened==false && metroTimer.check()){
+       TakeATurnHappened=true;
+       Serial.println("TakeATurnHappened");
+    }
+    if (resp_To_Gray_Happened==false && TakeATurnHappened && Sensor_1_Color_Copy == 0){// if black detected on far right sensor
+        metroTimer.interval(timer_PastBlackGate);//Resp_to_Gray();
+        metroTimer.reset();
         resp_To_Gray_Happened=true;
+        Serial.println("RespToGrayHappened");
     }
     if (TakeATurnHappened && resp_To_Gray_Happened && metroTimer.check()){
         //Line_Sampling_Timer.end(); // stop line following
