@@ -10,10 +10,11 @@ double previous_error = 0; //For the D of PID
 double cumulated_error=0; //For the I of PID
 double error = 0;
 double correction = 0;
+double correction_saturation=15.;
 
-double Kp = 12.; //Gains
-double Kd = 7.;
-double Ki = 0.001;
+double Kp = 0.07; //Gains
+double Kd = 1.0;
+double Ki = 0.;
 
 typedef enum {
     LEFT, RIGHT
@@ -40,7 +41,7 @@ int sampling_rate = 1; //in ms
 
 // -------------------------- SETUP FUNCTIONS ---------------------------- //
 void Setup_Line_Following(void) {
-   Line_Sampling_Timer.begin(Follow_Line, 1000*sampling_rate);
+   Line_Sampling_Timer.begin(Follow_Line, 10*sampling_rate); //10 micro
 }
 void Setup_Line_Following_PID(void) {
    Line_Sampling_Timer.begin(Follow_Line_PID, 50000*sampling_rate);
@@ -68,14 +69,14 @@ void Follow_Line_PID(void) {
   //Read the IR LED measurements
   UpdateLineSensorValues();
   
-  Sensor_1_Color = Get_Color1(Sensor_1);
-  Sensor_2_Color = Get_Color(Sensor_2);
-  Sensor_3_Color = Get_Color(Sensor_3);
+  //Sensor_1_Color = Get_Color1(Sensor_1);
+  //Sensor_2_Color = Get_Color(Sensor_2);
+  //Sensor_3_Color = Get_Color(Sensor_3);
 
   //Error calculation
   previous_error = error;
   //error = Sensor_2_Color - Sensor_3_Color; //error is big if we are too far right, so we measure black on left (3) and white on right (2)
-  error=(float(Sensor_2)-float(Sensor_3))/500.;
+  error=(float(Sensor_2)-float(Sensor_3));
   if (error > 0) {
     error *=3;
   }
@@ -93,11 +94,11 @@ void Follow_Line_PID(void) {
   correction = Kp*error + Ki*cumulated_error + Kd*(error-previous_error);
 
   //Saturation on correction
-  if (correction > 70) {
-    correction = 70;
+  if (correction > correction_saturation) {
+    correction = correction_saturation;
   }
-  else if (correction < -70) {
-    correction = -70;
+  else if (correction < -correction_saturation) {
+    correction = -correction_saturation;
   }
 
   //Instead of keeping constant speed we will rather set the speeds slower:

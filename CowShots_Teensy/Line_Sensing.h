@@ -25,6 +25,7 @@ int sampling_rate_print = 500; //This is in ms so that we store it in smaller va
 void UpdateLineSensorValues(void);
 void PrintLineSensorValues(void);
 int Get_Color(int Sensor_Value);
+int Get_Color1(int Sensor_Value);
 // ------------------------------------------------ //
 
 
@@ -51,7 +52,7 @@ void Stop_Line_Sampling(void) {
 // ------------------ Read sensor values ------------------------- //
 void Read_IR_Sensor_1(void) {
   Sensor_1 = analogRead(IR_SENSOR_READ_1);
-  Sensor_1_Color = Get_Color(Sensor_1);
+  Sensor_1_Color = Get_Color1(Sensor_1);
   
 }
 void Read_IR_Sensor_2(void) {

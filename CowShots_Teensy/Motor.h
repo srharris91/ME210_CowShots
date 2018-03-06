@@ -49,9 +49,9 @@ void Advance(void) {
 // ----------------- Elementary Moving ------------------ //
 
 void TurnRight(void) {
-    E1_state=30;
+    E1_state=28;
     D1_state=LOW;
-    E2_state=30;
+    E2_state=28;
     D2_state=HIGH;
     analogWrite(E1,E1_state);
     digitalWrite(D1,D1_state);

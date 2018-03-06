@@ -132,37 +132,41 @@ void handleStopAtB(){
 }
 void handleMoveToTurn(){
   noInterrupts();
-  Sensor_1_Color = Get_Color(Sensor_1);
+  Sensor_1_Color = Get_Color1(Sensor_1);
+  interrupts();
+
   if (Sensor_1_Color == 0) {
     //Line_Sampling_Timer.end();
     Stop_Line_Following_PID();
     Setup_Line_Sampling;
     TurnRight();
-    metroTimer.interval(700);
+    metroTimer.interval(timer_WaitForTurn);
     metroTimer.reset();
     state = STATE_WAIT_FOR_TURN;
     Serial.println("state set to WAIT_FOR_TURN");
   }
-  interrupts();
 }
 void handleWaitForTurn() {
   if (metroTimer.check() == 1) {
     TurnRight();
+    Stop_Line_Sampling();
     state = STATE_TAKE_A_TURN;
     Serial.println("state set to TAKE_A_TURN");
   }
 }
 void handleTakeATurn(){
+  UpdateLineSensorValues();
   noInterrupts();
   Sensor_3_Color = Get_Color(Sensor_3);
+  interrupts();
+
   if (Sensor_3_Color == 0) {
-    Stop_Line_Sampling();
+    
     Setup_Line_Following_PID();
     state = STATE_MOVE_TO_GATE;
     Serial.println("state set to MOVE_TO_GATE");
     //Motor_Stop();
   }
-  interrupts();
 }
 void handleMoveToGate(){
     noInterrupts();
