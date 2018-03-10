@@ -32,6 +32,11 @@ void Resp_to_key_motor(char);
 
 /*---------------CowShots Main Functions----------------*/
 void setup() {
+  // finish timer
+  finish210Timer.interval(130000);
+  finish210Timer.reset();
+
+  
   // put your setup code here, to run once:
   pinMode(ledPin,OUTPUT);
   digitalWrite(ledPin,ledState);
@@ -55,6 +60,8 @@ void setup() {
 }
 
 void loop() {
+  if (finish210Timer.check()==0){
+    
   // put your main code here, to run repeatedly:
   if (Serial.available()){
     char key_serial_monitor = Serial.read();
@@ -120,6 +127,11 @@ void loop() {
       Serial.println(state);
   }
   stepmotor.run();
+  }
+  else {
+    Motor_Stop();
+    state=STATE_TEST;
+  }
 }
 
 /*----------------Module Functions--------------------------*/

@@ -2,6 +2,8 @@
 bool resp_To_Gray_Happened=false;
 bool resp_Move_Stepper_Motor=false;
 bool TakeATurnHappened=false;
+int DutyCycle_Max=45;
+int DutyCycle_Min=25;
 // State machine
 typedef enum {
     STATE_MOVE_TO_A,
@@ -259,7 +261,7 @@ void handleTakeATurn(){
   if (Sensor_2_Color == 0) {
     //Stop_Line_Sampling();
     //DutyCycle=43;
-    DutyCycle=25;
+    DutyCycle=DutyCycle_Min;
     Setup_Line_Following_PID();
     state = STATE_MOVE_TO_GATE;
     Serial.println("state set to MOVE_TO_GATE");
@@ -276,7 +278,7 @@ void handleMoveToGate(){
     noInterrupts();
     int Sensor_1_Color_Copy = Sensor_1_Color;
     interrupts();
-    if (DutyCycle<40 && metroPostTurn.check()){
+    if (DutyCycle<DutyCycle_Max && metroPostTurn.check()){
       DutyCycle++;
     }
     if (TakeATurnHappened==false && metroTimer.check()){

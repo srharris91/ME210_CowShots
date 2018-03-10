@@ -13,7 +13,7 @@ int D2_state = LOW;
 int E2_state = LOW;
 // ----------------------------------------------------- //
 
-int DutyCycle = 40; //Our reference speed
+int DutyCycle = 45; //Our reference speed
 int Max_Speed = 200; //We use this to apply saturation
 int Right_Speed = DutyCycle;
 int Left_Speed = DutyCycle;

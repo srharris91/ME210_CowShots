@@ -235,27 +235,27 @@ void Follow_Line_Backwards_PID(void) {
   //Instead of keeping constant speed we will rather set the speeds slower:
 
   if (correction > 0) { //We want to turn left
-    Right_Speed = DutyCycle + correction/2.;
-    Left_Speed = DutyCycle - correction/2.;
-    Right_Direction = LOW;
-    Left_Direction = LOW;
+    Right_Speed = DutyCycle - correction/2.;
+    Left_Speed = DutyCycle + correction/2.;
+    Right_Direction = HIGH;
+    Left_Direction = HIGH;
     
     //Set the directions in case left
     if (Left_Speed < 0) {
       Left_Speed = DutyCycle-correction;
-      Left_Direction = HIGH;
+      Left_Direction = LOW;
     }
     
   }
   else {
-    Left_Speed = DutyCycle - correction/2.;
-    Right_Speed = DutyCycle + correction/2.;
-    Right_Direction = LOW;
-    Left_Direction = LOW;
+    Left_Speed = DutyCycle + correction/2.;
+    Right_Speed = DutyCycle - correction/2.;
+    Right_Direction = HIGH;
+    Left_Direction = HIGH;
 
     if (Right_Speed < 0) {
       Right_Speed = -Right_Speed;
-      Right_Direction = HIGH;
+      Right_Direction = LOW;
     }
   }
 

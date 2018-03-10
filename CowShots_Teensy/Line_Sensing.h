@@ -111,7 +111,7 @@ int Get_Color1(int Sensor_value) {
   if(Sensor_value < 100) {
     return 0; //Black
   }
-  else if (Sensor_value < 250) {
+  else if (Sensor_value < 200) {
     return 1; //Gray
   }
   else {

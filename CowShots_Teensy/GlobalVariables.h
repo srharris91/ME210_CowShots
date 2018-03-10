@@ -16,7 +16,7 @@ double save_previous_error=0;
 //What strategy should we use?
 //Protocol 0: Checkoff protocol, no gate detection
 //Protocol 1: We cycle going to A, PatentOffice, B, Refill, A...
-int Protocol = 1;
+int Protocol = 0;
 
 //IntervalTimer little_Timer;
 Metro metroTimer = Metro(timer_gray);
@@ -24,6 +24,7 @@ Metro pushTimer = Metro(timer_push);
 Metro metroPostTurn = Metro(timer_PostTurn);
 Metro refillTimer = Metro(timer_refill);
 Metro moveToRefillTimer = Metro(timer_moveToRefill);
+Metro finish210Timer = Metro(130000);
 //Metro pulseTimer = Metro(timer_pulse);
 
 int Sensor_1_Color;
