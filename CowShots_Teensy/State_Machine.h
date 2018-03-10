@@ -178,7 +178,6 @@ void handleBToRefill(){
   }
   if (resp_To_Gray_Happened && metroTimer.check()){
         state = STATE_MOVE_TO_REFILL;
-
         moveToRefillTimer.interval(timer_moveToRefill);
         moveToRefillTimer.reset();
         Serial.println("state set to MOVE_TO_REFILL");
