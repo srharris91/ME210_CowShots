@@ -44,6 +44,28 @@ void Advance(void) {
   digitalWrite(D2,D2_state);
 }
 
+void Push_Manoever_1(void) {
+  E1_state=38;
+  D1_state=LOW;
+  E2_state=0;
+  D2_state=HIGH;
+  analogWrite(E1,E1_state);
+  digitalWrite(D1,D1_state);
+  analogWrite(E2,E2_state);
+  digitalWrite(D2,D2_state);
+}
+
+void Push_Manoever_2(void) {
+  E1_state=38;
+  D1_state=HIGH;
+  E2_state=0;
+  D2_state=HIGH;
+  analogWrite(E1,E1_state);
+  digitalWrite(D1,D1_state);
+  analogWrite(E2,E2_state);
+  digitalWrite(D2,D2_state);
+}
+
 // ------------------------------------------------------ //
 
 // ----------------- Elementary Moving ------------------ //

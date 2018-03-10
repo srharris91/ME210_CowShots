@@ -29,6 +29,7 @@ bool Breaking_Event = 0;
 //Module Functions
 void Follow_Line(void);
 void Follow_Line_PID(void);
+void Follow_Line_Backwards_PID(void);
 void Reset_PID_vars(void);
 
 // ------------------- TIMER -------------------------- //
@@ -49,6 +50,12 @@ void Setup_Line_Following_PID(void) {
    previous_error = save_previous_error; //For the D of PID
    cumulated_error = 0; //For the I of PID
 }
+void Setup_Line_Following_Backwards_PID(void) {
+   Line_Sampling_Timer.begin(Follow_Line_Backwards_PID, 5000*sampling_rate);
+   //Reset_PID_vars_Timer.begin(Reset_PID_vars, 300000);
+   previous_error = save_previous_error; //For the D of PID
+   cumulated_error = 0; //For the I of PID
+}
 // ----------------------------------------------------------------------- //
 
 // -------------------------- END FUNCTIONS ---------------------------- //
@@ -56,6 +63,12 @@ void Stop_Line_Following(void) {
   Line_Sampling_Timer.end();
 }
 void Stop_Line_Following_PID(void) {
+  Line_Sampling_Timer.end();
+  Reset_PID_vars_Timer.end();
+  previous_error = 0; //For the D of PID
+  cumulated_error = 0; //For the I of PID
+}
+void Stop_Line_Following_Backwards_PID(void) {
   Line_Sampling_Timer.end();
   Reset_PID_vars_Timer.end();
   previous_error = 0; //For the D of PID
@@ -182,5 +195,71 @@ void Follow_Line(void) {
 void Reset_PID_vars(void) {
   cumulated_error = 0;
   previous_error = 0;
+}
+
+
+void Follow_Line_Backwards_PID(void) {
+
+  //Read the IR LED measurements
+  UpdateLineSensorValues();
+  
+
+  //Error calculation
+  previous_error = error;
+  //error = Sensor_2_Color - Sensor_3_Color; //error is big if we are too far right, so we measure black on left (3) and white on right (2)
+  error= -1.0*(float(Sensor_2)-float(Sensor_3));
+  if (error < 0) {
+    error *=1.5;
+  }
+  cumulated_error += error;
+
+  //Saturation on cumulated error
+  if (cumulated_error*Ki > 10) {
+    cumulated_error = 10./Ki;
+  }
+  else if (cumulated_error*Ki < -10) {
+    cumulated_error = -10./Ki;
+  }
+
+  //Correction calculation
+  correction = Kp*error + Ki*cumulated_error + Kd*(error-previous_error);
+
+  //Saturation on correction
+  if (correction > correction_saturation) {
+    correction = correction_saturation;
+  }
+  else if (correction < -correction_saturation) {
+    correction = -correction_saturation;
+  }
+
+  //Instead of keeping constant speed we will rather set the speeds slower:
+
+  if (correction > 0) { //We want to turn left
+    Right_Speed = DutyCycle + correction/2.;
+    Left_Speed = DutyCycle - correction/2.;
+    Right_Direction = LOW;
+    Left_Direction = LOW;
+    
+    //Set the directions in case left
+    if (Left_Speed < 0) {
+      Left_Speed = DutyCycle-correction;
+      Left_Direction = HIGH;
+    }
+    
+  }
+  else {
+    Left_Speed = DutyCycle - correction/2.;
+    Right_Speed = DutyCycle + correction/2.;
+    Right_Direction = LOW;
+    Left_Direction = LOW;
+
+    if (Right_Speed < 0) {
+      Right_Speed = -Right_Speed;
+      Right_Direction = HIGH;
+    }
+  }
+
+  Advance();
+  
 }
 

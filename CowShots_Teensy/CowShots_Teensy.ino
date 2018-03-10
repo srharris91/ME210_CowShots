@@ -99,6 +99,20 @@ void loop() {
     case STATE_STOP_AT_GATE:
       handleStopAtGate();
       break;
+
+    case STATE_B_TO_REFILL:
+      handleBToRefill();
+      break;
+    case STATE_MOVE_TO_REFILL:
+      handleMoveToRefill();
+      break;
+    case STATE_PUSH_BUTTON:
+      handlePushButton();
+      break;
+    case STATE_REFILL:
+      handleRefill();
+      break;
+      
     case STATE_TEST:
       break;
     default:    // Should never get into an unhandled state

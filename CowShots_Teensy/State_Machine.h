@@ -10,11 +10,20 @@ typedef enum {
     STATE_STOP_AT_PATENT_OFFICE,
     STATE_MOVE_TO_B,
     STATE_STOP_AT_B,
+
+    
     STATE_MOVE_TO_TURN,
     STATE_WAIT_FOR_TURN,
     STATE_TAKE_A_TURN,
     STATE_MOVE_TO_GATE,
     STATE_STOP_AT_GATE,
+
+    STATE_B_TO_REFILL, // Go back to the black line
+    STATE_MOVE_TO_REFILL, // once past the black line, go to the gray refill line
+    STATE_PUSH_BUTTON, // Manoever button
+    STATE_REFILL, //Wait for us (timer?)
+
+    
     STATE_TEST,
 } States_t;
 
@@ -28,17 +37,25 @@ void handleMoveToPatentOffice();
 void handleStopAtPatentOffice();
 void handleMoveToB();
 void handleStopAtB();
+
 void handleMoveToTurn();
 void handleWaitForTurn();
 void handleTakeATurn();
 void handleMoveToGate();
 void handleStopAtGate();
 
+void handleBToRefill();
+void handleMoveToRefill();
+void handlePushButton();
+void handleRefill();
+
 // Resp function declarations
 void Resp_to_Gray();
 
 
 // Function Definitions
+
+// ------------------------ PLACING BALLS STATES ---------------------------------- //
 void handleMoveToA(){
     noInterrupts();
     int Sensor_1_Color_Copy = Sensor_1_Color;
@@ -123,13 +140,90 @@ void handleStopAtB(){
         resp_Move_Stepper_Motor=true;
     }
     Run_Stepper_Motor();
-    if (stepmotor.distanceToGo() == 0){
-        Setup_Line_Following_PID();
-        state = STATE_MOVE_TO_TURN;
-        Serial.println("state set to MOVE_TO_TURN");
-        resp_Move_Stepper_Motor=false;
+
+    //CASE WHERE WE GO TO TURN
+    if (Protocol == 0) {
+      if (stepmotor.distanceToGo() == 0){
+          Setup_Line_Following_PID();
+          state = STATE_MOVE_TO_TURN;
+          Serial.println("state set to MOVE_TO_TURN");
+          resp_Move_Stepper_Motor=false;
+      }
+    }
+
+    //CASE WHERE WE GO TO REFILL
+    else if (Protocol == 1) {
+      if (stepmotor.distanceToGo() == 0){
+          Setup_Line_Following_Backwards_PID();
+          state = STATE_B_TO_REFILL;
+          Serial.println("state set to B_TO_REFILL");
+          resp_Move_Stepper_Motor=false;
+      }
+    }   
+}
+
+
+
+
+
+// ------------------------- REFILLING STATES -------------------------------- //
+void handleBToRefill(){
+  noInterrupts();
+  int Sensor_1_Color_Copy = Sensor_1_Color;
+  interrupts();
+
+  if (Sensor_1_Color_Copy == 0) {
+    Resp_to_Gray();
+    resp_To_Gray_Happened=true;
+  }
+  if (resp_To_Gray_Happened && metroTimer.check()){
+        state = STATE_MOVE_TO_REFILL;
+
+        moveToRefillTimer.interval(timer_moveToRefill);
+        moveToRefillTimer.reset();
+        Serial.println("state set to MOVE_TO_REFILL");
+        resp_To_Gray_Happened=false;
     }
 }
+
+void handleMoveToRefill() {
+
+  if (moveToRefillTimer.check()) {
+    Stop_Line_Following_Backwards_PID();
+    Motor_Stop(); // stop motor
+    state = STATE_PUSH_BUTTON;
+    metroTimer.interval(timer_push);
+    metroTimer.reset(); 
+    Serial.println("state set to PUSH_BUTTON");
+    Push_Manoever_1();
+  }
+}
+
+void handlePushButton() {
+  if (metroTimer.check()) {
+    Push_Manoever_2();
+    pushTimer.interval(timer_push);
+    pushTimer.reset(); 
+  }
+  if (metroTimer.check() && pushTimer.check()) {
+    Motor_Stop(); // stop motor
+    state = STATE_REFILL;
+    refillTimer.interval(timer_refill);
+    refillTimer.reset();
+  }
+}
+
+void handleRefill() {
+  if (refillTimer.check()) {
+    Setup_Line_Following_PID();
+    state = STATE_MOVE_TO_A;
+  }
+}
+
+
+
+
+// ------------------------------ TURNING STATES ------------------------------- //
 void handleMoveToTurn(){
   noInterrupts();
   Sensor_1_Color = Get_Color1(Sensor_1);
